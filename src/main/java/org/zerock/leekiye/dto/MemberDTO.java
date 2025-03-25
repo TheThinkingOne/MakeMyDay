@@ -1,0 +1,30 @@
+package org.zerock.leekiye.dto;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MemberDTO extends User {
+
+    // 일반 회원가입이면 로그인시에 아이디, 유저명(닉네임), 비번 따로 설정하게 하고
+    // 소셜 로그인이면 해당되는걸 바로 유저명(닉네임에 자동으로 저장하게 해야겠다!)
+    private String userID, userName, password;
+
+    private boolean isSocial;
+
+    private List<String> roleNames = new ArrayList<>();
+
+    public MemberDTO(String userID, String userName, String password, boolean isSocial, List<String> roleNames) {
+        super(userID, password, roleNames.stream().map(str -> new SimpleGrantedAuthority("ROLE_"+str)).collect(Collectors.toList()));
+
+        // SimpleGrantedAuthority : 문자열로 권한을 만드는 함수
+        this.userID = userID;
+        this.userName = userName;
+        this.password = password;
+        this.isSocial = isSocial;
+        this.roleNames = roleNames;
+    }
+}

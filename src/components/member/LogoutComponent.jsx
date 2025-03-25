@@ -3,9 +3,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../slices/loginSlice";
 import useCustomLogin from "../../hooks/useCustomLogin";
 
-function LogoutComponent(props) {
+function LogoutComponent() {
   const { doLogout, moveToPath } = useCustomLogin();
-
   const dispatch = useDispatch();
 
   const handleClickLogout = () => {
@@ -14,27 +13,18 @@ function LogoutComponent(props) {
     moveToPath("/");
   };
 
-  // 리액트는 싱글페이지 어플리케이션 이라서 쿠키를 설정해서 로그인 유지 해야함
-
   return (
-    <div className="border-2 border-red-200 mt-10 m-2 p-4">
-      <div className="flex justify-center">
-        <div className="text-4xl m-4 p-4 font-extrabold text-red-500">
+    <div className="flex justify-center items-center min-h-screen bg-white">
+      <div className="border-2 border-red-200 p-10 rounded shadow-md text-center">
+        <h2 className="text-4xl font-extrabold text-red-500 mb-8">
           Logout Component
-        </div>
-      </div>
-      <div className="flex justify-center">
-        <div className="relative mb-4 flex w-full justify-center">
-          <div className="w-2/5 p-6 flex justify-center font-bold">
-            <button
-              className="rounded p-4 w-36 bg-red-500 text-xl text-white"
-              onClick={handleClickLogout}
-            >
-              {" "}
-              LOGOUT{" "}
-            </button>
-          </div>
-        </div>
+        </h2>
+        <button
+          className="bg-red-500 hover:bg-red-600 text-white text-xl font-bold py-3 px-6 rounded transition duration-300"
+          onClick={handleClickLogout}
+        >
+          LOGOUT
+        </button>
       </div>
     </div>
   );

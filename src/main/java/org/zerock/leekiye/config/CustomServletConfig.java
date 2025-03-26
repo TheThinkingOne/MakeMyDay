@@ -15,11 +15,11 @@ public class CustomServletConfig {
 
     //private final TodoService todoService;
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-
-        log.info("addFormatters");
-
-        registry.addFormatter(new LocalDateFormatter());
-    }
+//    @Override
+//    public void addFormatters(FormatterRegistry registry) {
+//
+//        log.info("addFormatters");
+//
+//        registry.addFormatter(new LocalDateFormatter());
+//    }
 }

@@ -9,7 +9,7 @@ import org.zerock.leekiye.service.MemberService;
 @Log4j2
 @RequiredArgsConstructor
 public class SocialController {
-    private final MemberService memberService;
+    //private final MemberService memberService;
 
 
 }

@@ -37,6 +37,8 @@ public class Member {
     @Builder.Default
     private List<WallPaper> wallPaperList = new ArrayList<>();
 
+
+
     // 새로운 회원의 권한 추가
     public void addRole(MemberRole memberRole) {
         memberRoleList.add(memberRole);

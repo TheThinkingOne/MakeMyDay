@@ -5,9 +5,9 @@ import useCustomLogin from "../../hooks/useCustomLogin";
 import ResultModal from "../common/ResultModal";
 
 const initState = {
-  email: "",
-  pw: "",
-  nickname: "",
+  userID: "",
+  password: "",
+  userName: "",
 };
 
 function ModifyComponent(props) {
@@ -21,7 +21,7 @@ function ModifyComponent(props) {
   const [result, setResult] = useState();
 
   useEffect(() => {
-    setMember({ ...loginInfo, pw: "ABCD" }); // 상태 변경하기, 처음 로그인 했을 때 비밀번호는 ABCD 로 통일
+    setMember({ ...loginInfo, password: "ABCD" }); // 상태 변경하기, 처음 로그인 했을 때 비밀번호는 ABCD 로 통일
   }, [loginInfo]);
 
   const handleChange = (e) => {
@@ -33,7 +33,7 @@ function ModifyComponent(props) {
   // 사용자 회원정보 수정
   const handleClickModify = () => {
     modifyMember(member).then((result) => {
-      setResult("Modified!");
+      setResult("회원 정보가 수정되었습니다.");
     });
   };
 
@@ -57,12 +57,12 @@ function ModifyComponent(props) {
 
       <div className="flex justify-center">
         <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-1/5 p-6 text-right font-bold">Email</div>
+          <div className="w-1/5 p-6 text-right font-bold">User ID</div>
           <input
             className="w-4/5 p-6 rounded-r border border-solid border-neutral-300 shadow-md"
             name="email"
             type={"text"}
-            value={member.email}
+            value={member.userID}
             readOnly
           ></input>
         </div>
@@ -74,19 +74,19 @@ function ModifyComponent(props) {
             className="w-4/5 p-6 rounded-r border border-solid border-neutral-300 shadow-md"
             name="pw"
             type={"password"}
-            value={member.pw}
+            value={member.password}
             onChange={handleChange}
           ></input>
         </div>
       </div>
       <div className="flex justify-center">
         <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-1/5 p-6 text-right font-bold">Nickname</div>
+          <div className="w-1/5 p-6 text-right font-bold">User Name</div>
           <input
             className="w-4/5 p-6 rounded-r border border-solid border-neutral-300 shadow-md"
             name="nickname"
             type={"text"}
-            value={member.nickname}
+            value={member.userName}
             onChange={handleChange}
           ></input>
         </div>

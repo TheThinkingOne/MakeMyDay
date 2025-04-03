@@ -23,26 +23,20 @@ const BasicMenu = () => {
       <div className="w-4/5 bg-gray-500">
         <ul className="flex p-4 text-white font-bold">
           <li className="pr-6 text-2xl">
-            <Link to={"/"}>Main</Link>
+            <Link to={"/"}>Home</Link>
           </li>
           <li className="pr-6 text-2xl">
             <Link to={"/about"}>About</Link>
           </li>
 
-          {loginState?.email ? (
+          {loginState?.userID ? (
             <>
               <li className="pr-6 text-2xl">
-                <Link to={"/todo/"}>Todo</Link>
+                <Link to={"/todo/"}>일정</Link>
               </li>
               <li className="pr-6 text-2xl">
-                <Link to={"/products/"}>Products</Link>
+                <Link to={"/wallPaper/"}>월페이퍼</Link>
               </li>
-              <button
-                onClick={() => dispatch(logout())}
-                className="ml-4 text-white"
-              >
-                Logout
-              </button>
             </>
           ) : (
             <button
@@ -57,7 +51,7 @@ const BasicMenu = () => {
 
       {/* 로그인 해서 이메일 값 존재 여부에 따라 로그인 로그아웃 버튼 따로 나타내기 */}
       <div className="w-1/5 flex justify-end bg-orange-300 p-4 font-medium">
-        {!loginState.email ? (
+        {!loginState.userID ? (
           <div className="text-white text-sm m-1 rounded">
             <Link to={"/member/login"}>Login</Link>
           </div>

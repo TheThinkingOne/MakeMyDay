@@ -2,9 +2,10 @@ import { atom } from "recoil";
 import { getCookie } from "../util/cookieUtil";
 
 const initState = {
-  email: "",
-  nickname: "",
-  social: false,
+  //
+  userID: "",
+  userName: "",
+  isSocial: false,
   accessToken: "",
   refreshToken: "",
 };

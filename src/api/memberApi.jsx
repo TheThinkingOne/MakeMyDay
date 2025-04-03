@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_SERVER_HOST } from "./todoApi";
 
 //
-const host = `${API_SERVER_HOST}/api/member`;
+const host = `${API_SERVER_HOST}/makemyday/member`;
 
 export const loginPost = async (loginParam) => {
   const header = { headers: { "Content-Type": "x-www-form-urlencoded" } };

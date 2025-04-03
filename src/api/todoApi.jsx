@@ -12,6 +12,7 @@ export const API_SERVER_HOST = "http://localhost:8080"; // api 서버의 기본 
 // 스프링 어플리케이션 실행하니까 게시글 조회 페이지에 tno 값이 제대로 뜬다.
 
 const prefix = `${API_SERVER_HOST}/api/todo`; // API 요청의 기본 경로 설정
+// 위에껄 /makemyday/todo 로 바꿔야 하나
 // prefix : 모든 API 요청은 /api/todo 경로를 기준으로 진행
 
 // 비동기 통신
@@ -21,7 +22,7 @@ export const getOne = async (tno) => {
   const res = await jwtAxios.get(`${prefix}/${tno}`); // tno로 get 요청
 
   return res.data;
-};
+}; // 이건 건들거 없음
 
 export const getList = async (PageParam) => {
   const { page, size } = PageParam;
@@ -37,7 +38,7 @@ export const getList = async (PageParam) => {
   // 1. 간결한 비동기 처리, 유지보수성, 확장성
 
   // 유즈 스테이트?
-};
+}; // 이거도 건들거 없음
 
 export const postAdd = async (todoObj) => {
   // JSON.stringify(obj) => 어쩌구 이런거 할필요 없음 axios 사용하면

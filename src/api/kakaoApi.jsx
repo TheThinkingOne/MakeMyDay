@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_SERVER_HOST } from "./todoApi";
 
-const rest_api_key = "a3e22c5eeab24b7f3385e34e2e13b578"; // 카카오개발자에서 받은 Rest API 키
+const rest_api_key = "eb66e213bcb63195d75cfab926585ee9"; // 카카오개발자에서 받은 Rest API 키
 
 const redirect_uri = "http://localhost:5173/member/kakao"; // 카카오개발자에서 설정한 리다이렉트 URL 이건 문제없는듯함
 
@@ -9,7 +9,7 @@ const auth_code_path = "https://kauth.kakao.com/oauth/authorize"; // 카카오 �
 
 const access_token_uri = "https://kauth.kakao.com/oauth/token"; // 카카오 엑세스 토큰 링크
 
-const secret_key = "YChReJ7bS7y7qDgz1PPT3rYwSzV0ieI9";
+const secret_key = "5Yb75bXIT9bmu5OO755JQroVVcb9vZ83";
 
 export const getKakaoLoginLink = () => {
   const kakaoURL = `${auth_code_path}?client_id=${rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;

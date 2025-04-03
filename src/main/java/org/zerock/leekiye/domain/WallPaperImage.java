@@ -1,25 +1,30 @@
 package org.zerock.leekiye.domain;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.*;
 
-@Embeddable
-@ToString
+@Entity
 @Getter
-@Builder
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class WallPaperImage {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String fileName;
 
-    // 월페이퍼의 순번(근데 한개라서)
     private int ord;
 
-    // 월페이퍼 상세 등록 수정시에 사용할 메소드
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallpaper_id")
+    private WallPaper wallPaper;
 
     public void setOrd(int ord) {
         this.ord = ord;
     }
-
 }
+

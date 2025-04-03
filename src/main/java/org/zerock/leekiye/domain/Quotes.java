@@ -1,6 +1,8 @@
 package org.zerock.leekiye.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +17,11 @@ import lombok.NoArgsConstructor;
 public class Quotes {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long qno;
 
     private String author;
 
     private String quotes;
+
 }

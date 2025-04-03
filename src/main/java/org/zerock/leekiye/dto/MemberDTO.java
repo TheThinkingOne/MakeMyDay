@@ -4,7 +4,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MemberDTO extends User {
@@ -26,5 +28,19 @@ public class MemberDTO extends User {
         this.password = password;
         this.isSocial = isSocial;
         this.roleNames = roleNames;
+    }
+
+    // 이 메소드는 아마 로그인 관련 일것임
+    public Map<String, Object> getClaims() {
+
+        Map<String, Object> dataMap = new HashMap<>();
+
+        dataMap.put("userID", userID);
+        dataMap.put("password", password);
+        dataMap.put("userName", userName);
+        dataMap.put("isSocial", isSocial);
+        dataMap.put("roleNames", roleNames);
+
+        return dataMap;
     }
 }

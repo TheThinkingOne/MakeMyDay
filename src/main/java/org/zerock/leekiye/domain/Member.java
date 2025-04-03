@@ -16,10 +16,13 @@ public class Member {
 
     // 카카오 로그인은 이메을 안됨
     // 카카오는 닉네임이랑 프사만 불러올 수 있음
+    // ㅅㅂ 깃허브는 이메일로 넘어오는 것 같은데 어캐하지 깃허브는 하지말까
     @Id
-    private String userID;
+    private String userID; // 이건 소셜 로그인 혹은 가입시에 설정하는 아이디
+    // 카톡 땜에 이메일로 할 수가 없어서 userID로 퉁쳐야 할듯
 
-    private String userName;
+    private String userName; // 이건 회원가입시에 설정하는 닉네임
+    // 카카오 로그인이면 넘어온 유저닉네임이 해당 유저의 닉네임으로 되야 할..것
 
     private String password;
 

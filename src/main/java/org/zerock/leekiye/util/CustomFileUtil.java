@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CustomFileUtil {
 
-    @Value("${org.zerock.upload.path}")
+    @Value("upload")
     private String uploadPath;
 
     @PostConstruct // 생성자 대신 많이 씀

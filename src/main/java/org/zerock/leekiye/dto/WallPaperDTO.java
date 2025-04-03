@@ -22,7 +22,7 @@ public class WallPaperDTO {
 
     private String fileName;
 
-    private int ord;
+    private Long ord;
 
     @Builder.Default
     private List<MultipartFile> files = new ArrayList<>(); // 넣을때 사용

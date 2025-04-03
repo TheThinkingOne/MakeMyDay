@@ -10,4 +10,6 @@ public class MemberModifyDTO {
     private String userName;
 
     private String password;
+
+    private boolean isSocial;
 }

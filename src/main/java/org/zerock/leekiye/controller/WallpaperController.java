@@ -2,13 +2,22 @@ package org.zerock.leekiye.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.zerock.leekiye.dto.PageRequestDTO;
 import org.zerock.leekiye.dto.PageResponseDTO;
 import org.zerock.leekiye.dto.WallPaperDTO;
 import org.zerock.leekiye.service.WallPaperService;
+import org.zerock.leekiye.util.CustomFileUtil;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Log4j2
@@ -16,7 +25,27 @@ import java.util.Map;
 @RequestMapping("/makemyday/wallpaper")
 public class WallpaperController {
 
+    private final CustomFileUtil fileUtil;
+
     private final WallPaperService wallPaperService;
+
+    // 파일(이미지) 보는 컨트롤러
+    @GetMapping("/view/{fileName}") // 해당 이미지 눌렀을 때 보이게 하는 컨트롤러 메소드
+    public ResponseEntity<Resource> viewFileGet(@PathVariable("fileName") String fileName) {
+        Resource resource = (Resource) fileUtil.getFile(fileName);
+
+        // 🔹 Content-Type이 올바르게 설정되지 않으면 브라우저가 차단할 수 있음
+        HttpHeaders headers = new HttpHeaders();
+        try {
+            headers.add("Content-Type", Files.probeContentType(resource.getFile().toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to determine file type", e);
+        }
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
+    }
 
     // 해당 월페이퍼 불러오기
     @GetMapping("/{ord}")
@@ -36,11 +65,20 @@ public class WallpaperController {
     // /list?page=3 => 매번 다른 컨텐츠가 된다
     // 매번 바뀌는경우 pathVariable 로 설계하는게 아닌 queryString 사용 권장
 
-    // 게시글 수정
+    // 월페이퍼 등록
     @PostMapping("/")
     public Map<String, Long> register(@RequestBody WallPaperDTO dto) {
-        log.info("todoDTO: " + dto);
 
+        List<MultipartFile> files = dto.getFiles();
+
+        List<String> uploadedFileNames = fileUtil.saveFiles(files);
+
+        dto.setUploadFileNames(uploadedFileNames);
+
+        log.info("wallPaperDTO: " + dto);
+        log.info("uploaded wallpaper file names: " + uploadedFileNames);
+
+        // 월페이퍼 등록하고 월페이퍼 ID(게시글 번호) 생성
         Long ord = wallPaperService.register(dto);
 
         return Map.of("ord", ord);
@@ -53,20 +91,45 @@ public class WallpaperController {
         // /{tno} 와 todoDTO 안의 tno가 일치하는지 확인
         wallPaperDTO.setOrd(ord);
 
+        WallPaperDTO oldWallpaperDTO = wallPaperService.get(ord);
+
+        List<MultipartFile> files = wallPaperDTO.getFiles();
+        List<String> currentUploadFileNames = fileUtil.saveFiles(files);
+
+        // Keep files (이전에 있었는데 이번에 수정할 때도 계속 남아있는 파일) (String)
+        // 이미지 3개중에 한개 지우면 2개는 그대로 있는것이 예시
+        List<String> uploadedFileNames = wallPaperDTO.getUploadFileNames();
+        if(currentUploadFileNames != null && !currentUploadFileNames.isEmpty()) {
+            uploadedFileNames.addAll(currentUploadFileNames); // addAll 로 싹 다 넣기
+        }
+
         log.info("Modify: " + wallPaperDTO);
         wallPaperService.modify(wallPaperDTO);
+
+        List<String> oldFileNames = oldWallpaperDTO.getUploadFileNames();
+        if(oldFileNames != null && !oldFileNames.isEmpty()) { // 있는지 없는지 먼저 찾아내기
+
+            List<String> removeFiles = // 삭제될 애들을 리스트에 담아서
+                    oldFileNames.stream().filter(fileName ->
+                            uploadedFileNames.indexOf(fileName) == -1).collect(Collectors.toList());
+            fileUtil.deleteFiles(removeFiles); // 삭제
+        } // End of if
 
         return Map.of("RESULT", "SUCCESS");
 
     }
 
-    // 게시글 삭제
+    // 월페이퍼
     @DeleteMapping("/{ord}")
     public Map<String, String> remove( @PathVariable(name="ord") Long ord ){
+
+        List<String> oldFileNames = wallPaperService.get(ord).getUploadFileNames();
 
         log.info("Remove:  " + ord);
 
         wallPaperService.remove(ord);
+
+        fileUtil.deleteFiles(oldFileNames);
 
         return Map.of("RESULT", "SUCCESS");
     }

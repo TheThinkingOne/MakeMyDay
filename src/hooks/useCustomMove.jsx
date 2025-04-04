@@ -22,11 +22,10 @@ const useCustomMove = () => {
   const [queryParams] = useSearchParams();
 
   // 재사용하자
-
   const page = getNum(queryParams.get("page"), 1);
   const size = getNum(queryParams.get("size"), 10);
 
-  // page = 3 & size = 10
+  // page = 3 & size = 10 이런식
   const queryDefault = createSearchParams({ page, size }).toString();
 
   const moveToList = (pageParam) => {

@@ -30,6 +30,7 @@ const AddComponent = () => {
 
   const { moveToList } = useCustomMove();
 
+  // Mutation 에 대해서 알기
   const addMutation = useMutation({
     mutationFn: (product) => postAdd(product),
   });

@@ -10,8 +10,8 @@ export const loginPost = async (loginParam) => {
   const header = { headers: { "Content-Type": "x-www-form-urlencoded" } };
   const form = new FormData();
 
-  form.append("username", loginParam.email); // 카카오는 이메일 안되니까 userID
-  form.append("password", loginParam.pw);
+  form.append("username", loginParam.userID); // 카카오는 이메일 안되니까 userID
+  form.append("password", loginParam.password);
 
   const res = await axios.post(`${host}/login`, form, header);
   //

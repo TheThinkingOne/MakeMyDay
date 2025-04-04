@@ -68,9 +68,9 @@ function LoginComponent(props) {
           <div className="w-2/5 p-6 text-right font-bold">User ID</div>
           <input
             className="w-1/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
-            name="email"
+            name="userID"
             type="text"
-            value={loginParam.email}
+            value={loginParam.userID}
             onChange={handleChange}
           />
         </div>
@@ -83,7 +83,7 @@ function LoginComponent(props) {
             className="w-1/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
             name="pw"
             type="password"
-            value={loginParam.pw}
+            value={loginParam.password}
             onChange={handleChange}
           />
         </div>

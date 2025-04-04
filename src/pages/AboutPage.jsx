@@ -6,6 +6,7 @@ import useCustomLogin from "../hooks/useCustomLogin.jsx";
 const AboutPage = () => {
   const { isLogin, moveToLoginReturn } = useCustomLogin(); // 로그인 여부 확인
 
+  // 여기다가 나의 깃허브, 개발자 정보 써놓자
   if (!isLogin) {
     return moveToLoginReturn(); // 로그인 한 상황이 아니면 네비게이트만 리턴
   }

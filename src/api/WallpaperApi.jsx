@@ -32,3 +32,28 @@ export const getList = async (pageParam) => {
 
   return res.data;
 };
+
+// 월페이퍼 추가
+export const postAdd = async (wallpaper) => {
+  const header = { headers: { "Content-Type": "multipart/form-data" } };
+
+  const res = await jwtAxios.post(`${host}/`, wallpaper, header);
+
+  return res.data;
+};
+
+// 월페이퍼 수정
+export const putOne = async (ord, wallpaper) => {
+  const header = { headers: { "Content-Type": "multipart/form-data" } };
+
+  const res = await jwtAxios.put(`${host}/${ord}`, wallpaper, header);
+
+  return res.data;
+};
+
+// 월페이퍼 삭제
+export const deleteOne = async (ord) => {
+  const res = await jwtAxios.delete(`${host}/${ord}`);
+
+  return res.data;
+};

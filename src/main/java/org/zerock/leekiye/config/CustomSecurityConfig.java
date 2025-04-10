@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,71 +31,71 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        log.info("----------------- Spring Security Config ---------------");
+        log.info("===== Spring Security Config Loaded =====");
 
-        // CORS 설정
-        http.cors(httpSecurityCorsConfigurer -> {
-            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
-        });
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        // 폼 로그인 비활성화
-        http.formLogin(config -> config.disable());
+        http.csrf(csrf -> csrf.disable());
 
-        // 세션 안 만들기 api 서버는 기본적으로 무상태이기 때문이라고 한다.
-        http.sessionManagement(httpSecuritySessionManagementConfigurer -> {
-            httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.NEVER);
-        });
+        // 세션 사용 안 함 (JWT 기반이므로)
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // CSRF 비활성화
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
+        // 🔒 접근 권한 설정
+        http.authorizeHttpRequests(auth -> auth
+                // 로그인 관련 요청은 모두 허용
+                .requestMatchers("/makemyday/member/**", "/makemyday/member/refresh").permitAll()
 
-        // 🔹 인증 예외 처리 추가
-        http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/wallpaper/list/**").permitAll()  // 이미지 요청은 인증 없이 허용 이거 추가함
-                .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                // 이미지 접근은 로그인 사용자만 (컨트롤러에서 본인 확인)
+                .requestMatchers("/makemyday/wallpaper/view/**").authenticated()
+
+                // Quotes는 등록은 누구나, list/delete는 ADMIN만
+                .requestMatchers(HttpMethod.GET, "/makemyday/quotes/list", "/makemyday/quotes/{qno}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/makemyday/quotes/{qno}").hasRole("ADMIN")
+
+                // Todo, Wallpaper는 로그인 사용자만
+                .requestMatchers("/makemyday/todo/**", "/makemyday/wallpaper/**").authenticated()
+
+                // 나머지 요청은 막기
+                .anyRequest().denyAll()
         );
 
-        // 로그인 설정
-        http.formLogin(config -> {
-            config.loginPage("/makemyday/member/login");
-            config.successHandler(new APILoginSuccessHandler());
-            config.failureHandler(new APILoginFailHandler());
+        // 🔹 로그인 성공/실패 핸들러 (현재 사용 안해도 문제 없음)
+        http.formLogin(form -> {
+            form.disable();
+            form.loginPage("/makemyday/member/login")
+                    .successHandler(new APILoginSuccessHandler())
+                    .failureHandler(new APILoginFailHandler());
         });
 
         // 🔹 JWT 필터 등록
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // 🔹 권한 부족 예외 처리
-        http.exceptionHandling(config -> {
-            config.accessDeniedHandler(new CustomAccessDeniedHandler()); // 403 발생시 핸들링?
-        });
+        // 🔹 예외 처리 핸들러 등록
+        http.exceptionHandling(ex -> ex.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
 
-
-    // 패스워드 인코더
+    // 비밀번호 암호화
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 모든 도메인 허용
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization")); // <- 추가
-        configuration.setAllowCredentials(true); // 인증된 요청 허용
-
-        // 🔹 브라우저가 이미지 요청을 CORS로 차단하지 않도록 허용
-        configuration.addExposedHeader("Content-Type");
+        config.setAllowedOriginPatterns(Arrays.asList("*")); // 모든 origin 허용 (개발 환경 기준)
+        config.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type")); // 헤더 노출
+        config.setAllowCredentials(true); // 쿠키 등 자격정보 포함 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", config);
 
         return source;
     }

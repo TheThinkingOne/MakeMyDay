@@ -6,10 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.zerock.leekiye.domain.Member;
 
-public interface MemberRepository extends JpaRepository<Member, String> {
+import java.util.Optional;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // Role(권한)도 이메일이랑 같이 가져올것
     @EntityGraph(attributePaths = {"memberRoleList"}) // 여기 attributePaths 는 뭐지
     @Query("select m from Member m where m.userID = :userID")
-    Member getWithRoles(@Param("userID") String userID);
+    // 아래는 리팩토링 한거
+    Optional<Member> getWithRoles(@Param("userID") String userID);
+    Optional<Member> findByUserID(String userID);
 }

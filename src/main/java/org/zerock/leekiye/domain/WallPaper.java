@@ -42,6 +42,7 @@ public class WallPaper {
     //
     public void addWallPaperImage(WallPaperImage wallPaperImage) {
         wallPaperImage.setOrd(wallPaperImageList.size());
+        wallPaperImage.setWallPaper(this); //
         wallPaperImageList.add(wallPaperImage);
     }
 
@@ -56,4 +57,6 @@ public class WallPaper {
     public void clearWallPaperList() {
         this.wallPaperImageList.clear();
     }
+
+
 }

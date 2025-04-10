@@ -39,49 +39,41 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // accessToken 을 이용해서 사용자 정보 가져오기
+        String kakaoID = getKakaoID(accessToken); // ← 사용자 고유 ID 값 받기
+        String nickname = getKakaoNickname(accessToken); // ← 카카오톡 닉네임
 
-        // 카카오 연동 닉네임 -- 이메일 주소에 해당(예전에는 카카오 로그인하면 이메일 가져오는게 됬지만 지금은 안되니까...)
-        String nickname = getEmailFromKakaoAccessToken(accessToken); // 카카오에서 이메일 가져오기
-        log.info("가져온 닉네임: " + nickname);
-        if (nickname == null) {
-            log.error("[ERROR] getEmailFromKakaoAccessToken 에서 닉네임을 가져오지 못함");
+        if (kakaoID == null || nickname == null) {
+            log.error("[ERROR] 카카오 사용자 정보 조회 실패");
             return null;
         }
 
-        // 기존 DB에 이미 있는 경우는? 없는 경우는? => 따로 처리해야함
-        // 닉네임으로 아이디 찾아보기
-        Optional<Member> result = memberRepository.findById(nickname);
+        // 카카오 로그인 사용자의 로그인 아이디는 kakao_123456 같은 형식으로 설정
+        String userID = "kakao_" + kakaoID;
 
-        if(result.isPresent()) {
+        log.info("카카오 사용자 ID(userID): {}", userID);
+        log.info("카카오 사용자 닉네임(userName): {}", nickname);
 
-            MemberDTO memberDTO = entityToDTO(result.get());
-            log.info("is already existed.............." + memberDTO);
+        // 기존 회원인지 확인
+        Optional<Member> result = memberRepository.findByUserID(userID);
 
-            return memberDTO;
-
-            // 내가 엑세스 토큰을 발행받았다는 이야기는 엑세스 토큰을 발행받았다는 소리이므로
-            // 해당 사용자의 DB 정보 유무만 체크하면 됨
-            // return
-
-            // 2025/02/20 현재 문제점
-            // 소셜 로그인 해도 화면에 로그인 관련 정보 안 나오고 DB에 사용자 정보가 저장되고 있지 않음
+        if (result.isPresent()) {
+            log.info("기존 카카오 회원 로그인 성공");
+            return entityToDTO(result.get());
         }
 
-        // 이미 회원이 아닌경우(신규 가입자인 경우)
-        Member socialMember = makeSocialMember(nickname);
+        // 신규 회원이면 저장
+        Member newSocialMember = makeSocialMember(userID, nickname);
+        memberRepository.save(newSocialMember);
 
-        memberRepository.save(socialMember); // 소셜 유저 저장
+        log.info("[DEBUG] 신규 소셜 회원 저장됨: {}", newSocialMember);
 
-        MemberDTO memberDTO = entityToDTO(socialMember); // 소셜 유저 정보를 DTO 에 담기
-        log.info("[DEBUG] 신규 회원 저장됨: " + socialMember);
-
-        return memberDTO;
+        return entityToDTO(newSocialMember);
     }
 
     // 회원정보 변경을 위한 서비스 IMPL 메소드
     @Override
     public void modifyMember(MemberModifyDTO memberModifyDTO) {
-        Optional<Member> result = memberRepository.findById(memberModifyDTO.getUserID());
+        Optional<Member> result = memberRepository.findByUserID(memberModifyDTO.getUserID());
 
         Member member = result.orElseThrow();
 
@@ -93,104 +85,88 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-    private Member makeSocialMember(String userID) {
-        // 원래는 이메일을 가지고 사용자 Entity 를 생성하는데 이메일이 안되니 아이디로 하나
-        String tempPassword = makeTempPassword();
+    // 소셜 회원 생성 메소드
+    private Member makeSocialMember(String userID, String userName) {
+        String tempPassword = makeTempPassword(); // 임시 비번 생성
 
         log.info("임시 비번 tempPassword: " + tempPassword);
 
         Member member = Member.builder()
-                .userID(userID) // 이메일을 닉네임으로 대신할것
+                .userID(userID)
                 .password(passwordEncoder.encode(tempPassword))
-                .userName("Social Login Member")
+                .userName(userName)
                 .isSocial(true)
                 .build();
 
-        // 소셜로 로그인한 사람은 닉네임 같은거 나중에 수정할 수 있게 해야함
         member.addRole(MemberRole.USER);
 
         return member;
     }
 
-    // 사용쟈 정보 가져오는건 restTemplate 로 처리
-    private String getEmailFromKakaoAccessToken(String accessToken) {
-
-        log.info("[DEBUG] getEmailFromKakaoAccessToken 실행됨, accessToken: " + accessToken);
+    // 카카오에서 사용자 고유 ID 가져오기
+    private String getKakaoID(String accessToken) {
         String kakaoGetUserURL = "https://kapi.kakao.com/v2/user/me";
 
         RestTemplate restTemplate = new RestTemplate();
 
-        HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        // 요청에 필요한 카카오 값을 해더에 추가
+        HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        HttpEntity<String> entity = new HttpEntity<>(headers); // 정보 담는 엔티티
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        // 위까진 동일
-
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(kakaoGetUserURL).build();
-
-//        ResponseEntity<LinkedHashMap> response = // 카카오에서 받아오는 정보는 LinkedHashMap 이다.
-//                restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, entity, LinkedHashMap.class);
-//
-//        log.info("카카오 응답: " + response);
-//
-//        // 윗줄의 response 를 LinkedHashMap 으로 끄집어내서 bodyMap 에 담기
-//        LinkedHashMap<String, LinkedHashMap> bodyMap = response.getBody();
-//
-//        // 여기는 교재랑 다른부분
-//        LinkedHashMap<String, String> kakaoAccount = bodyMap.get("properties"); // 이전에는 kakao_account 대신 properties 가 적혀있었음
-//
-//        log.info("--------------check for Kakao LinkedHashMap------------");
-//        log.info(bodyMap);
-//        log.info("kakaoAccount = " + kakaoAccount);
-//
-//        String nickname = kakaoAccount.get("nickname"); // 카카오 닉네임
-//
-//        log.info("카카오 닉네임 = " + nickname);
-//
-//        return nickname;
         try {
             ResponseEntity<LinkedHashMap> response = restTemplate.exchange(
-                    uriComponents.toString(),
-                    HttpMethod.GET,
-                    entity,
-                    LinkedHashMap.class
+                    kakaoGetUserURL, HttpMethod.GET, entity, LinkedHashMap.class
             );
 
-            log.info("[DEBUG] 카카오 API 응답: " + response.getBody());
+            LinkedHashMap<String, Object> bodyMap = response.getBody();
+            Object idObj = bodyMap.get("id");
+
+            return idObj.toString();
+        } catch (Exception e) {
+            log.error("[ERROR] 카카오 ID 가져오기 실패:", e);
+            return null;
+        }
+    }
+
+    // 카카오에서 닉네임 가져오기
+    private String getKakaoNickname(String accessToken) {
+        String kakaoGetUserURL = "https://kapi.kakao.com/v2/user/me";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<LinkedHashMap> response = restTemplate.exchange(
+                    kakaoGetUserURL, HttpMethod.GET, entity, LinkedHashMap.class
+            );
 
             LinkedHashMap<String, Object> bodyMap = response.getBody();
-            LinkedHashMap<String, String> kakaoAccount = (LinkedHashMap<String, String>) bodyMap.get("properties");
+            LinkedHashMap<String, String> properties = (LinkedHashMap<String, String>) bodyMap.get("properties");
 
-            if (kakaoAccount == null) {
-                log.error("[ERROR] 카카오 API 응답에서 properties 키를 찾을 수 없음");
+            if (properties == null) {
                 return null;
             }
 
-            String nickName = kakaoAccount.get("nickname");
-            log.info("[DEBUG] 카카오에서 가져온 닉네임: " + nickName);
-
-            return nickName;
+            return properties.get("nickname");
         } catch (Exception e) {
-            log.error("[ERROR] 카카오 API 요청 실패:", e);
+            log.error("[ERROR] 카카오 닉네임 가져오기 실패:", e);
             return null;
         }
     }
 
     // 10자리의 랜덤한 비밀번호 만드는 메소드
     private String makeTempPassword() {
-
-        StringBuffer buffer = new StringBuffer();
-
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < 10; i++) {
-            buffer.append((char) ((int) (Math.random() * 55) + 65));
+            buffer.append((char) ((int) (Math.random() * 26) + 97)); // a~z 범위의 랜덤 문자
         }
-
         return buffer.toString();
     }
-
-
-
 }

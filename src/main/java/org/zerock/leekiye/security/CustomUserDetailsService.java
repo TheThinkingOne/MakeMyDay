@@ -16,34 +16,27 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userID) throws UsernameNotFoundException {
+        log.info("CustomUserDetailsService - LoadByUserID: " + userID);
 
-        log.info("---------------LoadByUserName is Working---------------");
-        log.info("---------------Username: " + username); // 여기서 유저명 뜨는지 로그에서 확인
+        // 이부분 리팩토링
+        Member member = memberRepository.getWithRoles(userID)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        Member member = memberRepository.getWithRoles(username);
-
-        if (member == null) {
-            throw new UsernameNotFoundException("Current username not found");
-        }
-
-        MemberDTO memberDTO = new MemberDTO(
+        return new MemberDTO(
+                member.getId(),
                 member.getUserID(),
                 member.getPassword(),
                 member.getUserName(),
                 member.isSocial(),
                 member.getMemberRoleList()
                         .stream()
-                        .map(memberRole ->memberRole.name()).collect(Collectors.toList()));
-
-
-        log.info("---------------MemberDTO: " + memberDTO);
-        // UserDetails 가 MemberDto 가 된다
-        return memberDTO;
-
+                        .map(Enum::name)
+                        .collect(Collectors.toList())
+        );
     }
-
 }

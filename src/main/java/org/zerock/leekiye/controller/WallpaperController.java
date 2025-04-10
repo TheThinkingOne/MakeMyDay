@@ -5,8 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.zerock.leekiye.dto.MemberDTO;
 import org.zerock.leekiye.dto.PageRequestDTO;
 import org.zerock.leekiye.dto.PageResponseDTO;
 import org.zerock.leekiye.dto.WallPaperDTO;
@@ -49,15 +51,19 @@ public class WallpaperController {
 
     // 해당 월페이퍼 불러오기
     @GetMapping("/{ord}")
-    public WallPaperDTO get(@PathVariable(name = "ord") Long ord) {
+    public WallPaperDTO get(@PathVariable(name = "ord") Long ord,
+                            @AuthenticationPrincipal MemberDTO memberDTO) {
+        // return wallPaperService.getForUser(ord, memberDTO.getId());
         return wallPaperService.get(ord);
     }
 
     @GetMapping("/list")
-    public PageResponseDTO<WallPaperDTO> list(PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO<WallPaperDTO> list(PageRequestDTO pageRequestDTO,
+                                              @AuthenticationPrincipal MemberDTO memberDTO) {
         log.info("list ====== " + pageRequestDTO);
 
         // 리스트 불러오기
+        // return wallPaperService.getListForUser(pageRequestDTO, memberDTO.getId());
         return wallPaperService.getList(pageRequestDTO);
     }
 
@@ -67,7 +73,8 @@ public class WallpaperController {
 
     // 월페이퍼 등록
     @PostMapping("/")
-    public Map<String, Long> register(@RequestBody WallPaperDTO dto) {
+    public Map<String, Long> register(@RequestBody WallPaperDTO dto,
+                                      @AuthenticationPrincipal MemberDTO memberDTO) {
 
         List<MultipartFile> files = dto.getFiles();
 
@@ -86,10 +93,13 @@ public class WallpaperController {
 
     // 월페이퍼 게시글 수정
     @PutMapping("/{ord}")
-    public Map<String, String> modify(@PathVariable("ord") Long ord, @RequestBody WallPaperDTO dto,
-                                      @RequestBody WallPaperDTO wallPaperDTO) {
+    public Map<String, String> modify(@PathVariable("ord") Long ord,
+                                      @RequestBody WallPaperDTO wallPaperDTO,
+                                      @AuthenticationPrincipal MemberDTO memberDTO) {
         // /{tno} 와 todoDTO 안의 tno가 일치하는지 확인
         wallPaperDTO.setOrd(ord);
+
+        // wallPaperDTO.setWriterId(memberDTO.getId());
 
         WallPaperDTO oldWallpaperDTO = wallPaperService.get(ord);
 
@@ -121,12 +131,14 @@ public class WallpaperController {
 
     // 월페이퍼
     @DeleteMapping("/{ord}")
-    public Map<String, String> remove( @PathVariable(name="ord") Long ord ){
+    public Map<String, String> remove( @PathVariable(name="ord") Long ord,
+                                       @AuthenticationPrincipal MemberDTO memberDTO){
 
         List<String> oldFileNames = wallPaperService.get(ord).getUploadFileNames();
 
         log.info("Remove:  " + ord);
 
+        // wallPaperService.removeForUser(ord, memberDTO.getId());
         wallPaperService.remove(ord);
 
         fileUtil.deleteFiles(oldFileNames);

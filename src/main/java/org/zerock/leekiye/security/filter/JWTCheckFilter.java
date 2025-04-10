@@ -76,6 +76,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             // Security Context Holder 에 사용자 정보 전달
             // 사용자 정보 끄집어내기
             // 여기에 혹시 빠진거 있나 체크
+            Long id = (Long) claims.get("id");
             String userID = (String) claims.get("userID"); // 여길 어캐 해야하지...?
             //
             String password = (String) claims.get("password");
@@ -84,7 +85,11 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             List<String> roleNames = (List<String>) claims.get("roleNames");
 
             // MemberDTO 생성
-            MemberDTO memberDTO = new MemberDTO(userID, password, userName, isSocial.booleanValue(), roleNames);
+
+            // !!!!!!!!!!!!!!!!!!!!
+            // 나중에 이 부분에서 오류가 일어날 수도 있겠다 아마도
+
+            MemberDTO memberDTO = new MemberDTO(id ,userID, password, userName, isSocial.booleanValue(), roleNames);
 
             // 로그 출력
             log.info("-----------------------------------");

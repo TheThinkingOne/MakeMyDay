@@ -21,4 +21,12 @@ public interface WallPaperRepository extends JpaRepository<WallPaper, Long>, Wal
     @Query("SELECT w, wl FROM WallPaper w LEFT JOIN w.wallPaperImageList wl where wl.ord = 0")
     Page<Object[]> selectList(Pageable pageable);
 
+    // 여기 쿼리 만들어야 함
+    @Query("SELECT w, i FROM WallPaper w LEFT JOIN w.wallPaperImageList i WHERE w.writer.id = :userID AND (i.ord = 0 OR i IS NULL)")
+    Page<Object[]> selectListForUser(@Param("userID") String userID, Pageable pageable);
+
+
+    // @Query
+    // Page<Object[]> selectListForUser(Pageable, pageable)
+
 }

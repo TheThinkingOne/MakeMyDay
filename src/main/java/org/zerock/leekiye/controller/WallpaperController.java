@@ -49,12 +49,12 @@ public class WallpaperController {
                 .body(resource);
     }
 
-    // 해당 월페이퍼 불러오기
+    // 해당 월페이퍼 불러오기(사용자 전용 조회)
     @GetMapping("/{ord}")
     public WallPaperDTO get(@PathVariable(name = "ord") Long ord,
                             @AuthenticationPrincipal MemberDTO memberDTO) {
         // return wallPaperService.getForUser(ord, memberDTO.getId());
-        return wallPaperService.get(ord);
+        return wallPaperService.getForUser(ord, memberDTO.getUserID());
     }
 
     @GetMapping("/list")
@@ -64,7 +64,7 @@ public class WallpaperController {
 
         // 리스트 불러오기
         // return wallPaperService.getListForUser(pageRequestDTO, memberDTO.getId());
-        return wallPaperService.getList(pageRequestDTO);
+        return wallPaperService.getList(pageRequestDTO, memberDTO.getUserID());
     }
 
     // queryString
@@ -76,6 +76,7 @@ public class WallpaperController {
     public Map<String, Long> register(@RequestBody WallPaperDTO dto,
                                       @AuthenticationPrincipal MemberDTO memberDTO) {
 
+        // dto.setWriterId(memberDTO.getId()); 작성자 설정하는것도 필요함 권한땜에
         List<MultipartFile> files = dto.getFiles();
 
         List<String> uploadedFileNames = fileUtil.saveFiles(files);
@@ -86,7 +87,7 @@ public class WallpaperController {
         log.info("uploaded wallpaper file names: " + uploadedFileNames);
 
         // 월페이퍼 등록하고 월페이퍼 ID(게시글 번호) 생성
-        Long ord = wallPaperService.register(dto);
+        Long ord = wallPaperService.register(dto, memberDTO.getUserID());
 
         return Map.of("ord", ord);
     }
@@ -99,7 +100,7 @@ public class WallpaperController {
         // /{tno} 와 todoDTO 안의 tno가 일치하는지 확인
         wallPaperDTO.setOrd(ord);
 
-        // wallPaperDTO.setWriterId(memberDTO.getId());
+        // wallPaperDTO.setWriterId(memberDTO.getId()); // 작성자 설정 필요 유저에 따른 조회 땜에
 
         WallPaperDTO oldWallpaperDTO = wallPaperService.get(ord);
 
@@ -114,7 +115,7 @@ public class WallpaperController {
         }
 
         log.info("Modify: " + wallPaperDTO);
-        wallPaperService.modify(wallPaperDTO);
+        wallPaperService.modify(wallPaperDTO, memberDTO.getUserID());
 
         List<String> oldFileNames = oldWallpaperDTO.getUploadFileNames();
         if(oldFileNames != null && !oldFileNames.isEmpty()) { // 있는지 없는지 먼저 찾아내기
@@ -134,14 +135,19 @@ public class WallpaperController {
     public Map<String, String> remove( @PathVariable(name="ord") Long ord,
                                        @AuthenticationPrincipal MemberDTO memberDTO){
 
-        List<String> oldFileNames = wallPaperService.get(ord).getUploadFileNames();
+//        List<String> oldFileNames = wallPaperService.get(ord).getUploadFileNames();
+//
+//        log.info("Remove:  " + ord);
+//
+//        // wallPaperService.removeForUser(ord, memberDTO.getId()); // 해당 사용자가 지우는게 맞는지 검증필요
+//        wallPaperService.remove(ord, memberDTO.getUserID());
+//
+//        fileUtil.deleteFiles(oldFileNames);
 
-        log.info("Remove:  " + ord);
+        WallPaperDTO dto = wallPaperService.getForUser(ord, memberDTO.getUserID());
+        wallPaperService.remove(ord, memberDTO.getUserID());
 
-        // wallPaperService.removeForUser(ord, memberDTO.getId());
-        wallPaperService.remove(ord);
-
-        fileUtil.deleteFiles(oldFileNames);
+        fileUtil.deleteFiles(dto.getUploadFileNames());
 
         return Map.of("RESULT", "SUCCESS");
     }

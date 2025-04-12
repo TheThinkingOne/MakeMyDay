@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.zerock.leekiye.domain.Member;
 import org.zerock.leekiye.domain.WallPaper;
 import org.zerock.leekiye.domain.WallPaperImage;
 import org.zerock.leekiye.dto.PageRequestDTO;
@@ -25,6 +26,14 @@ public class WallPaperServiceImpl implements WallPaperService {
 
     private final WallPaperRepository wallPaperRepository;
 
+    @Override // 해당 사용자가 등록한 게시글만 불러오게 하는 거
+    public WallPaperDTO getForUser(Long ord, String userID) {
+        WallPaper wallPaper = wallPaperRepository.findById(ord)
+                .filter(w -> w.getWriter().getUserID().equals(userID))
+                .orElseThrow(() -> new RuntimeException("해당 유저가 등록한 월페이퍼가 아닙니다."));
+        return entityToDTO(wallPaper);
+    }
+
     // 해당 월페이퍼의 등록번호 가져오기
     @Override
     public WallPaperDTO get(Long ord) {
@@ -38,12 +47,16 @@ public class WallPaperServiceImpl implements WallPaperService {
     // 이거도 역시 다시 공부해야 한다
     // 월페이퍼 리스트 가져오기
     @Override
-    public PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO) {
+    // // public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO, Long userID)
+    public PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO, String userID) {
+
+        // Pageable pageable = // 흠 이부분은 어떻게 해야할지 모르겠다
+        // TodoServiceImpl 은 이 부분에 todoSearchByUser 라는 메소드를 만들어서 하라고 하던데
         Pageable pageable = PageRequest.of(pageRequestDTO.getPage()-1,
                 pageRequestDTO.getSize(),
                 Sort.by("ord").descending());
 
-        Page<Object[]> result = wallPaperRepository.selectList(pageable);
+        Page<Object[]> result = wallPaperRepository.selectListForUser(userID, pageable);
         // object[] => 0 product 1 productImage
         // object[] => 0 product 1 productImage
         // object[] => 0 product 1 productImage
@@ -81,8 +94,11 @@ public class WallPaperServiceImpl implements WallPaperService {
 
     // 여기 인티저로 해야하나 Long 으로 해야하나 모르겟노
     @Override
-    public Long register(WallPaperDTO wallPaperDTO) {
+    // // public Long register(WallpaperDTO wallpaperDTO, Long userID)
+    public Long register(WallPaperDTO wallPaperDTO, String userID) {
         WallPaper wallPaper = dtoToEntity(wallPaperDTO);
+        wallPaper.setWriter(Member.builder().userID(userID).build());
+        // 대충 이렇게 적으면 되나
 
         log.info("------------------------");
         log.info(wallPaper);
@@ -94,32 +110,45 @@ public class WallPaperServiceImpl implements WallPaperService {
 
     // 월페이퍼 수정
     @Override
-    public void modify(WallPaperDTO wallPaperDTO) {
-        // 조회
-        Optional<WallPaper> result = wallPaperRepository.findById(wallPaperDTO.getOrd());
-        // 변경내용 반영
-        WallPaper wallPaper = result.orElseThrow();
-        // 변경내용 저장
-        wallPaper.changePaperTitle(wallPaperDTO.getPaperTitle());
+    // // public void modify(WallPaperDTO wallPaperDTO, Long userID)
+    public void modify(WallPaperDTO wallPaperDTO, String userID) {
 
-        // 이미지 처리(목록 먼저 비워야 함)
-        List<String> uploadFileNames = wallPaperDTO.getUploadFileNames();
-        wallPaper.clearWallPaperList();
+        //
+        WallPaper wallpaper = wallPaperRepository.findById(wallPaperDTO.getOrd())
+                        .filter(t -> t.getWriter().getUserID().equals(userID))
+                        .orElseThrow(() -> new RuntimeException("수정 권한 없음"));
 
-        if(uploadFileNames != null || !uploadFileNames.isEmpty()) {
-            uploadFileNames.forEach(uploadName -> {
-                wallPaper.addImageString(uploadName);
-            });
-        }
+//        // 조회
+//        Optional<WallPaper> result = wallPaperRepository.findById(wallPaperDTO.getOrd());
+//        // 변경내용 반영
+//        WallPaper wallPaper = result.orElseThrow();
+//        // 변경내용 저장
+//        wallPaper.changePaperTitle(wallPaperDTO.getPaperTitle());
+//
+//        // 이미지 처리(목록 먼저 비워야 함)
+//        List<String> uploadFileNames = wallPaperDTO.getUploadFileNames();
+//        wallPaper.clearWallPaperList();
+//
+//        if(uploadFileNames != null || !uploadFileNames.isEmpty()) {
+//            uploadFileNames.forEach(uploadName -> {
+//                wallPaper.addImageString(uploadName);
+//            });
+//        }
 
         // 저장
-        wallPaperRepository.save(wallPaper);
+        wallPaperRepository.save(wallpaper);
     }
 
     // 해당 월페이퍼 게시글(?) 삭제
     @Override
-    public void remove(Long ord) {
-        wallPaperRepository.deleteById(ord);
+    // public void remove(Long ord, Long userID)
+    public void remove(Long ord, String userID) {
+
+        WallPaper wallPaper = wallPaperRepository.findById(ord)
+                .filter(w -> w.getWriter().getUserID().equals(userID))
+                .orElseThrow(() -> new RuntimeException("해당 월페이퍼를 올린 유저만 삭제 가능합니다."));
+
+        wallPaperRepository.delete(wallPaper);
     }
 
     // 이 부분이 좀 어렵구만

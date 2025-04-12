@@ -27,6 +27,8 @@ public class WallPaper {
     @Builder.Default
     private List<WallPaperImage> wallPaperImageList = new ArrayList<>();
 
+    // 이걸 어캐 구현해야 하지
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member writer; // 작성자 정보 추가(근데 이게 꼭 필요한가?)
@@ -56,6 +58,10 @@ public class WallPaper {
 
     public void clearWallPaperList() {
         this.wallPaperImageList.clear();
+    }
+
+    public void setWriter(Member member) {
+        this.writer = member;
     }
 
 

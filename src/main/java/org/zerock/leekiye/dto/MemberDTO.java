@@ -1,5 +1,6 @@
 package org.zerock.leekiye.dto;
 
+import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
 public class MemberDTO extends User {
 
     // 일반 회원가입이면 로그인시에 아이디, 유저명(닉네임), 비번 따로 설정하게 하고

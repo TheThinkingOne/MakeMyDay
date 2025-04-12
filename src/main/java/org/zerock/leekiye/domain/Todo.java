@@ -28,6 +28,7 @@ public class Todo {
 
     private boolean isComplete;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member writer; // 작성자 정보 추가
@@ -75,5 +76,9 @@ public class Todo {
     public void changeSavePeriod(SavePeriod savePeriod) {
         this.savePeriod = savePeriod;
     }
+
+     public void setWriter(Member member) {
+      this.writer = member; // 근데 이게 맞나
+     }
 
 }

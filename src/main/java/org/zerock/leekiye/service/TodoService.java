@@ -1,6 +1,7 @@
 package org.zerock.leekiye.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.leekiye.domain.Member;
 import org.zerock.leekiye.domain.Todo;
 import org.zerock.leekiye.dto.PageRequestDTO;
 import org.zerock.leekiye.dto.PageResponseDTO;
@@ -11,19 +12,21 @@ public interface TodoService {
 
     TodoDTO get (Long tno);
 
-    PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO);
+    TodoDTO getForUser (String userID, Long tno); // 매개변수를 뭘로 받아야하지
 
-    Long register(TodoDTO dto);
+    PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO, String userID);
 
-    void modify(TodoDTO todoDTO);
+    Long register(TodoDTO dto, String userID);
 
-    void remove(Long tno);
+    void modify(TodoDTO todoDTO, String userID);
+
+    void remove(Long tno, String userID);
 
     //PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO)
 
     // dtoToEntity와 entityToDTO 공부해보기
-    default Todo dtoToEntity(TodoDTO todoDTO) {
-        return Todo.builder()
+    default Todo dtoToEntity(TodoDTO todoDTO, String userID) {
+        Todo todo = Todo.builder()
                 .tno(todoDTO.getTno())
                 .title(todoDTO.getTitle())
                 .contents(todoDTO.getContents())
@@ -32,6 +35,9 @@ public interface TodoService {
                 .savePeriod(todoDTO.getSavePeriod())
                 .createdAt(todoDTO.getCreatedAt())
                 .build();
+
+        todo.setWriter(Member.builder().userID(userID).build()); // ✨ 작성자 설정
+        return todo;
     }
 
     default TodoDTO entityToDTO(Todo todo) {

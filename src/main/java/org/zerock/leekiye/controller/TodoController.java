@@ -22,9 +22,8 @@ public class TodoController {
 
     // 해당 게시글 조회
     @GetMapping("/{tno}")
-    public TodoDTO get(@PathVariable(name = "tno") Long tno,
-                       @AuthenticationPrincipal MemberDTO memberDTO) {
-        return todoService.get(tno); // 유저 소유 확인 필요
+    public TodoDTO get(@PathVariable Long tno, @AuthenticationPrincipal MemberDTO memberDTO) {
+        return todoService.getForUser(memberDTO.getUserID(), tno);
     }
 
     // Todo 리스트 불러오기
@@ -34,7 +33,8 @@ public class TodoController {
         log.info("list ====== " + pageRequestDTO);
 
         // 리스트 불러오기
-        return todoService.getList(pageRequestDTO);
+        return todoService.getList(pageRequestDTO, memberDTO.getUserID());
+        // return todoService.getListForUser(pageRequestDTO, memberDTO.getId());
     }
 
     // Todo 등록
@@ -44,7 +44,7 @@ public class TodoController {
 
         log.info("todoDTO: " + dto);
         // dto.setWriterId(memberDTO.getId()); // 작성자 설정
-        Long tno = todoService.register(dto);
+        Long tno = todoService.register(dto, memberDTO.getUserID());
 
         return Map.of("TNO", tno);
     }
@@ -58,7 +58,7 @@ public class TodoController {
         todoDTO.setTno(tno);
         //todoDTO.setWriterId(memberDTO.getId()); // 작성자 검증
         log.info("Modify: " + todoDTO);
-        todoService.modify(todoDTO);
+        todoService.modify(todoDTO, memberDTO.getUserID());
 
         return Map.of("RESULT", "SUCCESS");
 
@@ -70,8 +70,8 @@ public class TodoController {
                                       @AuthenticationPrincipal MemberDTO memberDTO) {
         log.info(tno + "번 게시글 삭제");
 
-        // todoService.removeForUser(tno, memberDTO.getId());
-        todoService.remove(tno);
+        // todoService.removeForUser(tno, memberDTO.getId()); 작성자 맞는지 확인하고 삭제
+        todoService.remove(tno, memberDTO.getUserID());
 
         return Map.of("RESULT", "SUCCESS");
     }

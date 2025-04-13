@@ -16,4 +16,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 아래는 리팩토링 한거
     Optional<Member> getWithRoles(@Param("userID") String userID);
     Optional<Member> findByUserID(String userID);
+
+    // 이미 존재하는 아이디인 경우 가입 불가 시키기
+    // 리포지토리에 boolean 메소드 적는게 맞나?
+    // @Query("SELECT COUNT(*) > 0 FROM Member WHERE userID = ?")
+    boolean existsByUserID(String userID);
+
 }

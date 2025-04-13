@@ -15,6 +15,7 @@ import org.zerock.leekiye.domain.Member;
 import org.zerock.leekiye.domain.MemberRole;
 import org.zerock.leekiye.dto.MemberDTO;
 import org.zerock.leekiye.dto.MemberModifyDTO;
+import org.zerock.leekiye.dto.MemberRegisterDTO;
 import org.zerock.leekiye.repository.MemberRepository;
 
 import java.util.LinkedHashMap;
@@ -68,6 +69,22 @@ public class MemberServiceImpl implements MemberService {
         log.info("[DEBUG] 신규 소셜 회원 저장됨: {}", newSocialMember);
 
         return entityToDTO(newSocialMember);
+    }
+
+    @Override
+    public Member register(MemberRegisterDTO memberRegisterDTO) { // 여기 리턴타입을 void 로 하는게 좋은가 아니면
+        // Member 로 하는게 좋은가 흠...
+        // 여기다가 회원가입 로직 적으면 될듯
+        Member member = Member.builder()
+                .userID(memberRegisterDTO.getUserID())
+                .userName(memberRegisterDTO.getUserName())
+                .password(passwordEncoder.encode(memberRegisterDTO.getPassword()))
+                .isSocial(false)
+                .build();
+
+        member.addRole(MemberRole.USER);
+
+        return memberRepository.save(member);
     }
 
     // 회원정보 변경을 위한 서비스 IMPL 메소드
@@ -168,5 +185,13 @@ public class MemberServiceImpl implements MemberService {
             buffer.append((char) ((int) (Math.random() * 26) + 97)); // a~z 범위의 랜덤 문자
         }
         return buffer.toString();
+    }
+
+    // 회원가입 시에 중복된 아이디 이미 있는지 체크\
+
+    // 이게 맞는지 확실하지 않군
+    @Override
+    public boolean existsByUserID(String userID) {
+        return memberRepository.existsByUserID(userID);
     }
 }

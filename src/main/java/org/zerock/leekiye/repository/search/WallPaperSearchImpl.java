@@ -51,7 +51,6 @@ public class WallPaperSearchImpl extends QuerydslRepositorySupport implements Wa
 
         long count = query.fetchCount();
 
-
         return null;
     }
 }

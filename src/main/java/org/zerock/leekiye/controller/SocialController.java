@@ -2,12 +2,11 @@ package org.zerock.leekiye.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.zerock.leekiye.domain.Member;
 import org.zerock.leekiye.dto.MemberDTO;
 import org.zerock.leekiye.dto.MemberModifyDTO;
+import org.zerock.leekiye.dto.MemberRegisterDTO;
 import org.zerock.leekiye.service.MemberService;
 import org.zerock.leekiye.util.JWTUtil;
 
@@ -47,6 +46,29 @@ public class SocialController {
         return claims;
 
         // return new String[]{"AAA","BBB","CCC"};
+    }
+
+    // 일반 회원가입 메소드
+    @PostMapping("/makemyday/member/register")
+    public Map<String, Object> register(@RequestBody MemberRegisterDTO memberRegisterDTO) {
+        if (memberService.existsByUserID(memberRegisterDTO.getUserID())) {
+            return Map.of("RESULT", "FAIL","MESSAGE","이미 사용중인 아이디 입니다. 다른 아이디를 사용해주세요.");
+        }
+
+        Member member = memberService.register(memberRegisterDTO); // 등록
+        MemberDTO memberDTO = memberService.entityToDTO(member);
+
+        Map<String, Object> claims = memberDTO.getClaims();
+        String accessToken = JWTUtil.generateToken(claims, 10);
+        String refreshToken = JWTUtil.generateToken(claims, 60 * 24);
+
+        // memberService.register(memberRegisterDTO);
+
+        return Map.of(
+                "RESULT", "SUCCESS",
+                "accessToken", accessToken,
+                "refreshToken", refreshToken
+        );
     }
 
     // 회원정보 수정하는 PutMapping 메소드

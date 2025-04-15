@@ -75,15 +75,8 @@ public class MemberServiceImpl implements MemberService {
     public Member register(MemberRegisterDTO memberRegisterDTO) { // 여기 리턴타입을 void 로 하는게 좋은가 아니면
         // Member 로 하는게 좋은가 흠...
         // 여기다가 회원가입 로직 적으면 될듯
-        Member member = Member.builder()
-                .userID(memberRegisterDTO.getUserID())
-                .userName(memberRegisterDTO.getUserName())
-                .password(passwordEncoder.encode(memberRegisterDTO.getPassword()))
-                .isSocial(false)
-                .build();
-
+        Member member = dtoToEntity(memberRegisterDTO);
         member.addRole(MemberRole.USER);
-
         return memberRepository.save(member);
     }
 
@@ -186,6 +179,16 @@ public class MemberServiceImpl implements MemberService {
         }
         return buffer.toString();
     }
+
+    private Member dtoToEntity(MemberRegisterDTO dto) {
+        return Member.builder()
+                .userID(dto.getUserID())
+                .userName(dto.getUserName())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .isSocial(false)
+                .build();
+    }
+
 
     // 회원가입 시에 중복된 아이디 이미 있는지 체크\
 

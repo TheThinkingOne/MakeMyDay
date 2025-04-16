@@ -72,8 +72,8 @@ public class WallpaperController {
     // 매번 바뀌는경우 pathVariable 로 설계하는게 아닌 queryString 사용 권장
 
     // 월페이퍼 등록
-    @PostMapping("/")
-    public Map<String, Long> register(@RequestBody WallPaperDTO dto,
+    @PostMapping("/register")
+    public Map<String, Long> register(@ModelAttribute WallPaperDTO dto,
                                       @AuthenticationPrincipal MemberDTO memberDTO) {
 
         // dto.setWriterId(memberDTO.getId()); 작성자 설정하는것도 필요함 권한땜에

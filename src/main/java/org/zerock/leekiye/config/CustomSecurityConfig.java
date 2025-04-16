@@ -63,6 +63,7 @@ public class CustomSecurityConfig {
         http.formLogin(form -> {
             form.disable();
             form.loginPage("/makemyday/member/login")
+                    .loginProcessingUrl("/makemyday/member/login") // 로그인 요청 허용
                     .successHandler(new APILoginSuccessHandler())
                     .failureHandler(new APILoginFailHandler());
         });

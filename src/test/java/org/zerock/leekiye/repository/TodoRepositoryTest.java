@@ -71,6 +71,42 @@ public class TodoRepositoryTest {
         log.info("기존 사용자 작성 Todo 저장 성공. tno: {}", save.getTno());
     }
 
+    @Test
+    public void testInsertTodo0413_2() {
+
+        // Member writer
+        // 근데 맴버에서 현재 로그인 한 사용자 따로 가져오는게 있나? 아니면 투두에서
+
+        // MemberRepository.findByUserID("testUser0415") 사용해서 작성자 조회
+        //해당 Member를 Todo의 writer로 설정
+
+        String targetUserID = "testUser0413";
+
+        Member writer = memberRepository.findByUserID(targetUserID).orElseThrow(() ->
+                new RuntimeException(targetUserID + "의 아이디를 가진 작성자는 존재하지 않습니다"));
+
+        TodoDTO todoDTO = new TodoDTO();
+        todoDTO.setTitle("테스트 0413 Todo ver2");
+        todoDTO.setContents("요동치는 마음이 형태가 세상에 드러날 수 있게..");
+        todoDTO.setDueDate(LocalDate.now().plusDays(3));
+        todoDTO.setComplete(false);
+        todoDTO.setCreatedAt(LocalDate.now());
+        todoDTO.setSavePeriod(SavePeriod.PERMANENT);  // 예시 enum 값
+
+        // Entity 변환 및 작성자 설정
+        Todo todo = dtoToEntity(todoDTO);
+        todo.setWriter(writer);
+
+        // 게시글 저장
+        Todo save = todoRepository.save(todo);
+
+        // 검증해보기
+        Assertions.assertNotNull(save.getTno());
+        Assertions.assertEquals("testUser0413", save.getWriter().getUserID());
+
+        log.info("기존 사용자 작성 Todo 저장 성공. tno: {}", save.getTno());
+    }
+
 
     @Test
     public void testInsertTodo0415() {

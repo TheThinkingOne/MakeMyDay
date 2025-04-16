@@ -35,8 +35,10 @@ public class WallpaperRepositoryTest {
 
         WallPaperDTO wallPaperDTO = new WallPaperDTO();
         wallPaperDTO.setPaperTitle("test0413 wallpaper");
-        //wallPaperDTO.
+        //wallPaperDTO.git add
     }
+
+
 
 
 }

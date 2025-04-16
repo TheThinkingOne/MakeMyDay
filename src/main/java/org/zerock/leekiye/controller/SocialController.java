@@ -2,9 +2,11 @@ package org.zerock.leekiye.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.leekiye.domain.Member;
 import org.zerock.leekiye.dto.MemberDTO;
+import org.zerock.leekiye.dto.MemberLoginDTO;
 import org.zerock.leekiye.dto.MemberModifyDTO;
 import org.zerock.leekiye.dto.MemberRegisterDTO;
 import org.zerock.leekiye.service.MemberService;
@@ -19,6 +21,8 @@ public class SocialController {
 
     // 여길 안하고 있었네 ㅁㅊ
     private final MemberService memberService;
+
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/makemyday/member/kakao")
     public Map<String, Object> getMemberFromKakao(String accessToken) {
@@ -68,6 +72,31 @@ public class SocialController {
                 "RESULT", "SUCCESS",
                 "accessToken", accessToken,
                 "refreshToken", refreshToken
+        );
+    }
+
+    // 이런 씨2팔 일반 로그인 관련 메소드가 없잖아\
+    @PostMapping("/makemyday/member/login")
+    public Map<String, Object> login(@RequestBody MemberLoginDTO loginDTO) {
+
+        // 로그인 시도
+        MemberDTO memberDTO = (MemberDTO) memberService.loadByUserName(loginDTO.getUserID());
+
+        // 비밀번호 비교
+        if (!passwordEncoder.matches(loginDTO.getPassword(), memberDTO.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 토큰 생성
+        Map<String, Object> claims = memberDTO.getClaims();
+        String accessToken = JWTUtil.generateToken(claims, 10);
+        String refreshToken = JWTUtil.generateToken(claims, 60 * 24);
+
+        return Map.of(
+                "accessToken", accessToken,
+                "refreshToken", refreshToken,
+                "userID", memberDTO.getUserID(),
+                "userName", memberDTO.getUserName()
         );
     }
 

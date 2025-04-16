@@ -6,6 +6,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +22,7 @@ import org.zerock.leekiye.repository.MemberRepository;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +72,23 @@ public class MemberServiceImpl implements MemberService {
         log.info("[DEBUG] 신규 소셜 회원 저장됨: {}", newSocialMember);
 
         return entityToDTO(newSocialMember);
+    }
+
+    @Override
+    public UserDetails loadByUserName(String userID) throws UsernameNotFoundException {
+        Member member = memberRepository.getWithRoles(userID)
+                .orElseThrow(() -> new UsernameNotFoundException(userID + "의 아이디를 가진 사용자를 찾을 수 없습니다."));
+
+        return new MemberDTO(
+                member.getId(),
+                member.getUserID(),
+                member.getPassword(),
+                member.getUserName(),
+                member.isSocial(),
+                member.getMemberRoleList().stream()
+                        .map(Enum::name)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override

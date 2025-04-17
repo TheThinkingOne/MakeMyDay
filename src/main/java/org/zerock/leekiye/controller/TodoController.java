@@ -43,7 +43,13 @@ public class TodoController {
                                       @AuthenticationPrincipal MemberDTO memberDTO) {
 
         log.info("todoDTO: " + dto);
-        // dto.setWriterId(memberDTO.getId()); // 작성자 설정
+        // ! 포스트맨 에서 register 등록 실험 시에 터진 이유
+        // => 인증된 사용자 정보는 MemberDTO로 존재
+        //
+        //이걸 바로 writer로 사용하면 JPA는 “얘 누구임? DB에 없음” 하며 터짐
+        //
+        //MemberDTO.getId() → memberRepository.findById()로 실제 엔티티 다시 불러오면 해결
+        dto.setWriterID(memberDTO.getId()); // 작성자 설정
         Long tno = todoService.register(dto, memberDTO.getUserID());
 
         return Map.of("TNO", tno);

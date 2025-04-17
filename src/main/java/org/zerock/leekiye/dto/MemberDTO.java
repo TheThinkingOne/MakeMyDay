@@ -23,17 +23,18 @@ public class MemberDTO extends User {
     private List<String> roleNames = new ArrayList<>();
 
     // SimpleGrantedAuthority : 문자열로 권한을 만드는 함수
-    public MemberDTO(Long id, String userID, String userName, String password, boolean isSocial, List<String> roleNames) {
+    public MemberDTO(Long id, String userID, String password, String userName, boolean isSocial, List<String> roleNames) {
         super(userID, password, roleNames.stream()
                 .map(str -> new SimpleGrantedAuthority("ROLE_" + str))
                 .collect(Collectors.toList()));
         this.id = id;
         this.userID = userID;
-        this.userName = userName;
         this.password = password;
+        this.userName = userName;
         this.isSocial = isSocial;
         this.roleNames = roleNames;
     }
+
 
     // 이 메소드는 아마 로그인 관련 일것임
 //    public Map<String, Object> getClaims() {

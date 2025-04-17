@@ -25,7 +25,7 @@ public interface TodoService {
     //PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO)
 
     // dtoToEntity와 entityToDTO 공부해보기
-    default Todo dtoToEntity(TodoDTO todoDTO, String userID) {
+    default Todo dtoToEntity(TodoDTO todoDTO) {
         Todo todo = Todo.builder()
                 .tno(todoDTO.getTno())
                 .title(todoDTO.getTitle())
@@ -36,7 +36,7 @@ public interface TodoService {
                 .createdAt(todoDTO.getCreatedAt())
                 .build();
 
-        todo.setWriter(Member.builder().userID(userID).build()); // ✨ 작성자 설정
+        todo.setWriter(Member.builder().id(todoDTO.getWriterId()).build()); // ✨ 작성자 설정
         return todo;
     }
 

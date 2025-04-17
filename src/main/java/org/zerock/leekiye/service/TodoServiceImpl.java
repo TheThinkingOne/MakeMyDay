@@ -71,7 +71,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     // public Long register(TodoDTO dto, Long userId)
     public Long register(TodoDTO dto, String userID) {
-        Todo todo = dtoToEntity(dto, userID);
+        Todo todo = dtoToEntity(dto);
 
         // todo.setWriter(Member.builder().id(userID).build());
 
@@ -116,8 +116,8 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo dtoToEntity(TodoDTO todoDTO, String userID) {
-        return TodoService.super.dtoToEntity(todoDTO, userID);
+    public Todo dtoToEntity(TodoDTO todoDTO) {
+        return TodoService.super.dtoToEntity(todoDTO);
     }
 
     @Override

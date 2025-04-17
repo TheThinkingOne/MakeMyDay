@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new MemberDTO(
                 member.getId(),
                 member.getUserID(),
-                member.getPassword(),
+                member.getPassword(), // 이 부분이 로그인 시에 인코딩 비밀번호 매칭이 인되서 오류가 나는건가
                 member.getUserName(),
                 member.isSocial(),
                 member.getMemberRoleList()

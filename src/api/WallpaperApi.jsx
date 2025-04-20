@@ -9,7 +9,7 @@ const host = `${API_SERVER_HOST}/makemyday/wallpapers`;
 
 // 해당 월페이퍼의 저장글을 불러오는 것
 export const getOne = async (ord) => {
-  const res = await jwtAxios.get(`{host}/${ord}`);
+  const res = await jwtAxios.get(`${host}/${ord}`); // 오타있었음
 
   return res.data;
 };

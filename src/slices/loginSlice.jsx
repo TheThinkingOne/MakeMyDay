@@ -3,7 +3,11 @@ import { loginPost } from "../api/memberApi";
 import { getCookie, removeCookie, setCookie } from "../util/cookieUtil";
 
 const initState = {
-  email: "",
+  userID: "",
+  userName: "",
+  accessToken: "",
+  refreshToken: "",
+  isSocial: false,
 };
 
 // 2025/02/18

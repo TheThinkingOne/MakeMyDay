@@ -20,7 +20,7 @@ const useCustomLogin = () => {
 
   const navigate = useNavigate();
 
-  const isLogin = loginState.email ? true : false; // 로그인 여부 확인
+  const isLogin = !!loginState.userID; // 로그인 여부 확인
 
   // Recoil 사용할거라 useDispatch 사용 비활성화
   // const dispatch = useDispatch();
@@ -40,17 +40,29 @@ const useCustomLogin = () => {
   //   }
   // };
 
+  // const doLogin = async (loginParam) => {
+  //   //----------로그인 함수
+  //   console.log("doLogin 실행");
+  //   // Recoil 사용함으로 비활성화
+  //   // const action = await dispatch(loginPostAsync(loginParam));
+  //   // return action.payload;
+  //   const result = await loginPost(loginParam);
+
+  //   saveAsCookie(result);
+
+  //   return result;
+  // };
+
+  // 위에꺼 리팩토링함
   const doLogin = async (loginParam) => {
-    //----------로그인 함수
-    console.log("doLogin 실행");
-    // Recoil 사용함으로 비활성화
-    // const action = await dispatch(loginPostAsync(loginParam));
-    // return action.payload;
-    const result = await loginPost(loginParam);
-
-    saveAsCookie(result);
-
-    return result;
+    try {
+      const result = await loginPost(loginParam);
+      saveAsCookie(result);
+      return result;
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      throw error;
+    }
   };
 
   // 로그아웃 수행 함수

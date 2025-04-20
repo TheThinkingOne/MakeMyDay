@@ -10,6 +10,13 @@ export const setCookie = (name, value, days = 1) => {
   expires.setUTCDate(expires.getUTCDate() + days); // 보관기간
 
   return cookies.set(name, value, { expires: expires, path: "/" }); // 전체 경로(하위 경로)에 쿠키 전역으로 설정해서 로그인 쿠키 저장
+
+  // cookies.set(name, value, {
+  //   expires,
+  //   path: "/",
+  //   secure: true,      // HTTPS 환경에선 꼭 true
+  //   sameSite: "strict" // 혹은 lax
+  // });
 }; // 이름, 값, 시간 지정
 
 export const getCookie = (name) => {

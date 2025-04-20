@@ -54,9 +54,14 @@ export const deleteOne = async (tno) => {
   return res.data;
 };
 
-export const putOne = async (tno) => {
-  // 게시글 수정
-  const res = await jwtAxios.put(`${prefix}/${todo.tno}`, todo);
+// export const putOne = async (tno) => {
+//   // 게시글 수정
+//   const res = await jwtAxios.put(`${prefix}/${todo.tno}`, todo);
 
+//   return res.data;
+// };
+
+export const putOne = async (tno, todo) => {
+  const res = await jwtAxios.put(`${prefix}/${tno}`, todo);
   return res.data;
 };

@@ -1,0 +1,87 @@
+import React, { useState } from "react";
+import useCustomMove from "../../hooks/useCustomMove";
+import { postAdd } from "../../api/quotesApi";
+import ResultModal from "../common/ResultModal"; // 등록 결과를 보여줄 때 사용
+
+const initState = {
+  quotes: "",
+  author: "",
+};
+
+function AddComponent() {
+  const [quotesData, setQuotesData] = useState(initState);
+  const [result, setResult] = useState(null);
+
+  const { moveToList } = useCustomMove();
+
+  // 🔹 인풋 변경 핸들러
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setQuotesData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // 🔹 등록 요청
+  const handleClickAdd = () => {
+    postAdd(quotesData).then((data) => {
+      setResult("등록 완료되었습니다!");
+      setQuotesData(initState);
+    });
+  };
+
+  // 🔹 모달 닫기
+  const closeModal = () => {
+    setResult(null);
+    moveToList(); // 등록 후 리스트로 이동
+  };
+
+  return (
+    <div className="border-2 border-sky-200 mt-10 m-2 p-4">
+      {result && (
+        <ResultModal
+          title="명언 등록 결과"
+          content={result}
+          callbackFn={closeModal}
+        />
+      )}
+
+      <div className="flex justify-center">
+        <div className="w-full max-w-2xl p-6">
+          <div className="mb-4">
+            <label className="block text-xl font-bold mb-2">명언</label>
+            <input
+              className="w-full p-4 border rounded"
+              type="text"
+              name="quotes"
+              value={quotesData.quotes}
+              onChange={handleChange}
+              placeholder="명언을 입력하세요"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-xl font-bold mb-2">저자</label>
+            <input
+              className="w-full p-4 border rounded"
+              type="text"
+              name="author"
+              value={quotesData.author}
+              onChange={handleChange}
+              placeholder="작성자 또는 저자명"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
+              onClick={handleClickAdd}
+            >
+              등록하기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default AddComponent;

@@ -1,5 +1,5 @@
 import { API_SERVER_HOST } from "../../api/todoApi";
-import { getOne } from "../../api/WallpaperApi";
+import { getOne } from "../../api/wallpaperApi.jsx";
 import useCustomLogin from "../../hooks/useCustomLogin";
 import useCustomMove from "../../hooks/useCustomMove";
 

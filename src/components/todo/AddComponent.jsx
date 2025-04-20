@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ResultModal from "../../components/common/ResultModal";
+import ResultModal from "../common/ResultModal";
 import { postAdd } from "../../api/todoApi";
 import useCustomMove from "../../hooks/useCustomMove";
 

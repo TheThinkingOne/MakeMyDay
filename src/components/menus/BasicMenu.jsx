@@ -32,10 +32,10 @@ const BasicMenu = () => {
           {loginState?.userID ? (
             <>
               <li className="pr-6 text-2xl">
-                <Link to={"/todo/"}>일정</Link>
+                <Link to={"/todo/"}>나의 일정</Link>
               </li>
               <li className="pr-6 text-2xl">
-                <Link to={"/wallPaper/"}>월페이퍼</Link>
+                <Link to={"/wallPaper/"}>월페이퍼 관리</Link>
               </li>
             </>
           ) : (

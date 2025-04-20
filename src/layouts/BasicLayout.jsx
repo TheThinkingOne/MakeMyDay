@@ -21,4 +21,5 @@ function BasicLayout({ children }) {
   );
 }
 
+// 확인완료
 export default BasicLayout;

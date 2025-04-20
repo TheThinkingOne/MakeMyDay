@@ -49,6 +49,8 @@ public class CustomSecurityConfig {
                 .requestMatchers("/makemyday/wallpaper/view/**").authenticated()
 
                 // Quotes는 등록은 누구나, list/delete는 ADMIN만
+                .requestMatchers(HttpMethod.POST, "/makemyday/quotes/register").permitAll()
+
                 .requestMatchers(HttpMethod.GET, "/makemyday/quotes/list", "/makemyday/quotes/{qno}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/makemyday/quotes/{qno}").hasRole("ADMIN")
 

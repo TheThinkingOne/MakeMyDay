@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.catalina.LifecycleState;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.zerock.leekiye.domain.Quotes;
 import org.zerock.leekiye.domain.Todo;
@@ -32,6 +33,14 @@ public class QuotesServiceImpl implements QuotesService {
         Quotes quotes = result.orElseThrow();
 
         return entityToDTO(quotes);
+    }
+
+    @Override
+    public Long register(QuotesDTO quotesDTO) {
+
+        Quotes quotes = dtoToEntity(quotesDTO);
+
+        return quotesRepository.save(quotes).getQno();
     }
 
     //
@@ -70,5 +79,17 @@ public class QuotesServiceImpl implements QuotesService {
     @Override
     public QuotesDTO entityToDTO(Quotes quotes) {
         return QuotesService.super.entityToDTO(quotes);
+    }
+
+    @Override
+    public QuotesDTO getRandomQuote() {
+        long count = quotesRepository.count();
+        if (count == 0) throw new RuntimeException("등록된 명언이 없습니다.");
+
+        long randomIndex = (long)(Math.random() * count);
+        List<Quotes> list = quotesRepository.findAll(PageRequest.of((int) randomIndex, 1)).getContent();
+
+        return entityToDTO(list.get(0));
+
     }
 }

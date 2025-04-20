@@ -18,10 +18,15 @@ public interface WallPaperService {
 
     PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO, String userID);
 
+    // 사용자별로 해당 사용자가 등록한 월페이퍼 랜덤으로 불러오는 메소드
+    // 메소드 타입 뭐로 할지 모르겠군
+    // WallpaperDTO 로 할까?
+
     Long register(WallPaperDTO wallPaperDTO, String userID);
 
     void modify(WallPaperDTO wallPaperDTO, String userID);
 
     void remove(Long ord, String userID);
 
+    WallPaperDTO getRandomWallpaper(String userID);
 }

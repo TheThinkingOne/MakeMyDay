@@ -13,15 +13,17 @@ public interface QuotesService {
 
     PageResponseDTO<QuotesDTO> getList(PageRequestDTO pageRequestDTO);
 
+    Long register(QuotesDTO quotesDTO);
+
+    // 명언 랜덤으로 불러오는 메소드
+    // QuotesDTO 로 햘까?
+
+
     // 제거는 어드민이 그냥 이상하거면 할거라 상관없음
     void remove(Long qno);
 
     default Quotes dtoToEntity(QuotesDTO quotesDTO) {
-        return Quotes.builder()
-                .qno(quotesDTO.getQno())
-                .author(quotesDTO.getAuthor())
-                .quotes(quotesDTO.getQuotes())
-                .build();
+        return null;
     }
 
     default QuotesDTO entityToDTO(Quotes quotes) {
@@ -36,4 +38,5 @@ public interface QuotesService {
     }
 
 
+    QuotesDTO getRandomQuote();
 }

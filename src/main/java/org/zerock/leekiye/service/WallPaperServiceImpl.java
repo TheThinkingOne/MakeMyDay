@@ -13,10 +13,12 @@ import org.zerock.leekiye.domain.WallPaperImage;
 import org.zerock.leekiye.dto.PageRequestDTO;
 import org.zerock.leekiye.dto.PageResponseDTO;
 import org.zerock.leekiye.dto.WallPaperDTO;
+import org.zerock.leekiye.repository.MemberRepository;
 import org.zerock.leekiye.repository.WallPaperRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class WallPaperServiceImpl implements WallPaperService {
 
     private final WallPaperRepository wallPaperRepository;
+    private final MemberRepository memberRepository;
 
     @Override // 해당 사용자가 등록한 게시글만 불러오게 하는 거
     public WallPaperDTO getForUser(Long ord, String userID) {
@@ -97,7 +100,12 @@ public class WallPaperServiceImpl implements WallPaperService {
     // // public Long register(WallpaperDTO wallpaperDTO, Long userID)
     public Long register(WallPaperDTO wallPaperDTO, String userID) {
         WallPaper wallPaper = dtoToEntity(wallPaperDTO);
-        wallPaper.setWriter(Member.builder().userID(userID).build());
+
+        Member writer = memberRepository.findByUserID(userID)
+                        .orElseThrow(() -> new RuntimeException("해당 유저에 대한 작성자 정보가 없습니다."));
+
+        //wallPaper.setWriter(Member.builder().userID(userID).build()); // 이렇게 하니까 jpa 의존성 오류 발생
+        wallPaper.setWriter(writer);
         // 대충 이렇게 적으면 되나
 
         log.info("------------------------");
@@ -186,5 +194,14 @@ public class WallPaperServiceImpl implements WallPaperService {
         wallPaperDTO.setUploadFileNames(fileNameList);
 
         return wallPaperDTO;
+    }
+
+    @Override
+    public WallPaperDTO getRandomWallpaper(String userID) {
+        List<WallPaper> wallpapers = wallPaperRepository.findByWriter_UserID(userID);
+        if (wallpapers.isEmpty()) throw new RuntimeException("사용자의 배경화면이 없습니다.");
+
+        int index = new Random().nextInt(wallpapers.size());
+        return entityToDTO(wallpapers.get(index));
     }
 }

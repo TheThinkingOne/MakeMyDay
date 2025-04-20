@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.zerock.leekiye.domain.WallPaper;
 import org.zerock.leekiye.repository.search.WallPaperSearch;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface WallPaperRepository extends JpaRepository<WallPaper, Long>, WallPaperSearch {
@@ -24,6 +25,9 @@ public interface WallPaperRepository extends JpaRepository<WallPaper, Long>, Wal
     // 여기 쿼리 만들어야 함
     @Query("SELECT w, i FROM WallPaper w LEFT JOIN w.wallPaperImageList i WHERE w.writer.id = :userID AND (i.ord = 0 OR i IS NULL)")
     Page<Object[]> selectListForUser(@Param("userID") String userID, Pageable pageable);
+
+    // 여기 추가해야 함
+    List<WallPaper> findByWriter_UserID(String userID);
 
 
     // @Query

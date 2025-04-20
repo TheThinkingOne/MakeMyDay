@@ -30,6 +30,15 @@ public class QuotesController {
         return quotesService.getList(pageRequestDTO);
     }
 
+    @PostMapping("/register")
+    public Map<String, Long> register(@RequestBody QuotesDTO quotesDTO) {
+        log.info("Quotes register ===> " + quotesDTO);
+
+        Long qno = quotesService.register(quotesDTO);
+
+        return Map.of("qno", qno);
+    }
+
     // 해당 quotes 내용 보기(불러오기)
     @GetMapping("/{qno}")
     public QuotesDTO get(@PathVariable(name = "qno") Long qno) {
@@ -46,6 +55,6 @@ public class QuotesController {
         return Map.of("RESULT", "SUCCESS");
     }
 
-    // 수정은 걍 하지 말자
+    // 명언 랜덤 출력 로직
 
 }

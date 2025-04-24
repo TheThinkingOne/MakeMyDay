@@ -111,6 +111,28 @@ public class SocialController {
 
     }
 
+    // jwt 리프래시 토큰 관련 메소드
+    @GetMapping("/makemyday/member/refresh")
+    public Map<String, String> refreshAccessToken(@RequestHeader("Authorization") String accessToken,
+                                                  @RequestParam("refreshToken") String refreshToken) {
+
+        log.info("🔄 리프레시 토큰 요청 처리 중...");
+        log.info("AccessToken: " + accessToken);
+        log.info("RefreshToken: " + refreshToken);
+
+        // 1️⃣ 리프레시 토큰 검증
+        Map<String, Object> claims = JWTUtil.validateToken(refreshToken);
+
+        // 2️⃣ 새 AccessToken 발급
+        String newAccessToken = JWTUtil.generateToken(claims, 10);  // 10분 유효
+
+        return Map.of(
+                "accessToken", newAccessToken,
+                "refreshToken", refreshToken  // 보통 리프레시는 그대로 반환
+        );
+    }
+
+
 
 
 }

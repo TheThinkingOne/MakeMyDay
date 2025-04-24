@@ -128,4 +128,6 @@ public class Member {
     public void changeSocial(boolean isSocial) {
         this.isSocial = isSocial;
     }
+
+
 }

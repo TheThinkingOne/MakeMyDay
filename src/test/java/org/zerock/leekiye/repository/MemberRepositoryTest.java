@@ -163,6 +163,27 @@ public class MemberRepositoryTest {
         Assertions.assertFalse(member.getMemberRoleList().isEmpty());
     }
 
+    // 어드민 계정 넣기
+    @Test
+    public void registerAdminAccount() {
+        MemberRegisterDTO dto = new MemberRegisterDTO();
+        dto.setUserID("adminleekiye99");
+        dto.setUserName("관리자");
+        dto.setPassword("@q6jctr6wm");
+
+        // 1. 회원가입
+        Member member = memberService.register(dto);
+
+        // 2. 관리자 권한 추가
+        member.addRole(MemberRole.ADMIN);
+
+        // 3. 저장 (JPA의 변경 감지를 확실히 하기 위해 save)
+        memberRepository.save(member);
+
+        // 4. 검증
+        Assertions.assertTrue(member.getMemberRoleList().contains(MemberRole.ADMIN));
+    }
+
 
 
     // 또 맴버에서 테스트 해볼반한게 뭐가있을가

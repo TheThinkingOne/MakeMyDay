@@ -40,26 +40,22 @@ public class CustomSecurityConfig {
         // 세션 사용 안 함 (JWT 기반이므로)
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // 🔒 접근 권한 설정
+        // 접근권한 설정
+        // 로그인 관련 요청은 모두 허용
+        // 이미지 접근은 로그인 사용자만 (컨트롤러에서 본인 확인)
+        // Quotes는 등록은 누구나, list/delete는 ADMIN만
+        // Todo, Wallpaper는 로그인 사용자만
         http.authorizeHttpRequests(auth -> auth
-                // 로그인 관련 요청은 모두 허용
                 .requestMatchers("/makemyday/member/**", "/makemyday/member/refresh").permitAll()
-
-                // 이미지 접근은 로그인 사용자만 (컨트롤러에서 본인 확인)
                 .requestMatchers("/makemyday/wallpaper/view/**").authenticated()
-
-                // Quotes는 등록은 누구나, list/delete는 ADMIN만
+                .requestMatchers("/makemyday/wallpapers/**", "/makemyday/wallpaper/**").authenticated()  // 여기 s 오타있었음
                 .requestMatchers(HttpMethod.POST, "/makemyday/quotes/register").permitAll()
-
                 .requestMatchers(HttpMethod.GET, "/makemyday/quotes/list", "/makemyday/quotes/{qno}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/makemyday/quotes/{qno}").hasRole("ADMIN")
-
-                // Todo, Wallpaper는 로그인 사용자만
-                .requestMatchers("/makemyday/todo/**", "/makemyday/wallpaper/**").authenticated()
-
-                // 나머지 요청은 막기
+                .requestMatchers("/makemyday/todo/**").authenticated()
                 .anyRequest().denyAll()
         );
+
 
         // 🔹 로그인 성공/실패 핸들러 (현재 사용 안해도 문제 없음)
         http.formLogin(form -> {

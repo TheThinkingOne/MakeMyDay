@@ -29,14 +29,16 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
         log.info("check url--------" + path);
 
-        // 로그인, 리프레시, 이미지 조회는 필터 제외
-        if (path.startsWith("/makemyday/member/") ||
-                path.startsWith("/makemyday/wallpaper/view/") ||
-                path.equals("/makemyday/quotes/register")) { // ✅ 추가
-            return true;
-        }
+        return path.equals("/makemyday/member/login")
+                || path.equals("/makemyday/member/refresh")
+                || path.startsWith("/makemyday/wallpaper/view/")
+                || path.equals("/makemyday/member/register")
+                || path.equals("/makemyday/member/kakao")
+                || path.equals("/makemyday/member/modify")
+                || path.equals("/makemyday/quotes/register")
+                || path.startsWith("/makemyday/wallpapers/list");  // 추가 ✅
 
-        return false; // shouldNOtFilter 에서 false 리턴이면 체크한다는 뜻
+        // shouldnotfilter 에서 리턴값이 false 이면 그 부분은 체크 한다는 뜻
     }
 
 //    @Override

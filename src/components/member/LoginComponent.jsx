@@ -59,34 +59,34 @@ function LoginComponent(props) {
     <div className="border-2 border-sky-200 mt-10 m-2 p-4">
       <div className="flex justify-center">
         <div className="text-4xl m-4 p-4 font-extrabold text-blue-500">
-          Login Component
+          Make My Day 로그인
         </div>
       </div>
 
-      <div className="flex justify-center">
-        <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-2/5 p-6 text-right font-bold">User ID</div>
-          <input
-            className="w-1/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
-            name="userID"
-            type="text"
-            value={loginParam.userID}
-            onChange={handleChange}
-          />
-        </div>
+      <div className="flex flex-col items-center mb-6">
+        <label className="text-lg font-bold mb-2 text-center w-full">
+          User ID
+        </label>
+        <input
+          className="min-w-[250px] p-3 rounded border border-neutral-500 shadow-md text-center"
+          name="userID"
+          type="text"
+          value={loginParam.userID}
+          onChange={handleChange}
+        />
       </div>
 
-      <div className="flex justify-center">
-        <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-2/5 p-6 text-right font-bold">Password</div>
-          <input
-            className="w-1/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
-            name="pw"
-            type="password"
-            value={loginParam.password}
-            onChange={handleChange}
-          />
-        </div>
+      <div className="flex flex-col items-center mb-6">
+        <label className="text-lg font-bold mb-2 text-center w-full">
+          Password
+        </label>
+        <input
+          className="min-w-[250px] p-3 rounded border border-neutral-500 shadow-md text-center"
+          name="password"
+          type="password"
+          value={loginParam.password}
+          onChange={handleChange}
+        />
       </div>
 
       <div className="flex justify-center">

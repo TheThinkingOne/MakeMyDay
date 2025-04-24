@@ -1,64 +1,38 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { login, logout } from "../../slices/loginSlice";
 import { Link } from "react-router-dom";
 import useCustomLogin from "../../hooks/useCustomLogin";
 
 const BasicMenu = () => {
-  const dispatch = useDispatch();
-
-  // 🚀 Redux 상태 가져오기 (TypeScript 문법 제거)
-  // const loginState = useSelector((state) => state.loginSlice);
   const { loginState } = useCustomLogin();
-
-  // Redux 상태 전체 확인
-  console.log(
-    "Redux 전체 상태 확인:",
-    useSelector((state) => state)
-  );
-  console.log("loginState 확인:", loginState);
+  const isLogged = !!loginState?.userID;
 
   return (
-    <nav id="navbar" className="flex bg-blue-300">
-      <div className="w-4/5 bg-gray-500">
-        <ul className="flex p-4 text-white font-bold">
-          <li className="pr-6 text-2xl">
-            <Link to={"/"}>Home</Link>
-          </li>
-          <li className="pr-6 text-2xl">
-            <Link to={"/about"}>About</Link>
-          </li>
-
-          {loginState?.userID ? (
-            <>
-              <li className="pr-6 text-2xl">
-                <Link to={"/todo/"}>나의 일정</Link>
-              </li>
-              <li className="pr-6 text-2xl">
-                <Link to={"/wallPaper/"}>월페이퍼 관리</Link>
-              </li>
-            </>
-          ) : (
-            <button
-              onClick={() => dispatch(login("user@example.com"))}
-              className="text-white ml-4"
-            >
-              Login
-            </button>
-          )}
-        </ul>
+    <nav className="fixed top-0 left-0 w-full flex justify-between items-center p-2 z-50 bg-transparent">
+      {/* 좌측 메뉴 */}
+      <div className="flex space-x-3 ml-4 text-gray-800 font-extrabold text-2xl">
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        {isLogged && (
+          <>
+            <Link to="/todo">나의 일정</Link>
+            <Link to="/wallPaper">월페이퍼 관리</Link>
+          </>
+        )}
       </div>
 
-      {/* 로그인 해서 이메일 값 존재 여부에 따라 로그인 로그아웃 버튼 따로 나타내기 */}
-      <div className="w-1/5 flex justify-end bg-orange-300 p-4 font-medium">
-        {!loginState.userID ? (
-          <div className="text-white text-sm m-1 rounded">
-            <Link to={"/member/login"}>Login</Link>
-          </div>
+      {/* 우측 메뉴 */}
+      <div className="flex items-center space-x-2 mr-4 text-gray-800 text-lg">
+        {isLogged ? (
+          <>
+            <span>{loginState.userName}</span>
+            <Link to="/member/logout" className="underline">
+              Logout
+            </Link>
+          </>
         ) : (
-          <div className="text-white text-sm m-1 rounded">
-            <Link to={"/member/logout"}>Logout</Link>
-          </div>
+          <Link to="/member/login" className="underline">
+            Login
+          </Link>
         )}
       </div>
     </nav>

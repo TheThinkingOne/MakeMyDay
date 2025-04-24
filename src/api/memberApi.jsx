@@ -6,15 +6,27 @@ import { API_SERVER_HOST } from "./todoApi";
 //
 const host = `${API_SERVER_HOST}/makemyday/member`;
 
+// 스프링은 application/json 으로 로그인 요청 받고 있었음 그래서 여기도 그렇게 해야함
+// export const loginPost = async (loginParam) => {
+//   const header = { headers: { "Content-Type": "application/json" } };
+
+//   const body = {
+//     username: loginParam.userID,
+//     password: loginParam.password,
+//   };
+
+//   const res = await axios.post(`${host}/login`, body, header);
+
+//   return res.data;
+// };
+
 export const loginPost = async (loginParam) => {
-  const header = { headers: { "Content-Type": "x-www-form-urlencoded" } };
-  const form = new FormData();
-
-  form.append("username", loginParam.userID); // 카카오는 이메일 안되니까 userID
-  form.append("password", loginParam.password);
-
-  const res = await axios.post(`${host}/login`, form, header);
-  //
+  const header = { headers: { "Content-Type": "application/json" } };
+  const res = await axios.post(
+    `${host}/login`,
+    JSON.stringify(loginParam),
+    header
+  );
   return res.data;
 };
 

@@ -3,6 +3,11 @@
 // GET PUT DELETE 같은 CRUD에 필요한 함수 작성
 import jwtAxios from "../util/jwtUtil"; // axios 에서 jwtAxios 로 변경
 
+// PageParam에서 page(페이지 번호)와 size(페이지 크기)를 추출
+
+// async 의 모든 리턴값은 비동기이다.(Promise 객체)
+// await 를 사용하면 Promise가 해결된 값(실제 데이터)을 반환함
+
 // 경로 설정
 // api 서버 작업
 // 비동기 통신이란 서버로 데이터를 요청한 후,
@@ -17,51 +22,32 @@ const prefix = `${API_SERVER_HOST}/makemyday/todo`; // API 요청의 기본 경�
 
 // 비동기 통신
 
+// 단건 조회
 export const getOne = async (tno) => {
-  // async = 비동기통신
-  const res = await jwtAxios.get(`${prefix}/${tno}`); // tno로 get 요청
-
+  const res = await jwtAxios.get(`${prefix}/${tno}`);
   return res.data;
-}; // 이건 건들거 없음
+};
 
-export const getList = async (PageParam) => {
-  const { page, size } = PageParam;
-
+// 리스트 조회 (페이징 포함)
+export const getList = async ({ page, size }) => {
   const res = await jwtAxios.get(`${prefix}/list`, { params: { page, size } });
-  // PageParam에서 page(페이지 번호)와 size(페이지 크기)를 추출
-
-  // async 의 모든 리턴값은 비동기이다.(Promise 객체)
-  // await 를 사용하면 Promise가 해결된 값(실제 데이터)을 반환함
-  return res.data;
-
-  // axios와 async/await 장점
-  // 1. 간결한 비동기 처리, 유지보수성, 확장성
-
-  // 유즈 스테이트?
-}; // 이거도 건들거 없음
-
-export const postAdd = async (todoObj) => {
-  // JSON.stringify(obj) => 어쩌구 이런거 할필요 없음 axios 사용하면
-  const res = await jwtAxios.post(`${prefix}/`, todoObj);
-
   return res.data;
 };
 
+// 등록
+export const postAdd = async (todo) => {
+  const res = await jwtAxios.post(`${prefix}/`, todo);
+  return res.data;
+};
+
+// 삭제
 export const deleteOne = async (tno) => {
-  // 게시글 삭제
   const res = await jwtAxios.delete(`${prefix}/${tno}`);
-
   return res.data;
 };
 
-// export const putOne = async (tno) => {
-//   // 게시글 수정
-//   const res = await jwtAxios.put(`${prefix}/${todo.tno}`, todo);
-
-//   return res.data;
-// };
-
-export const putOne = async (tno, todo) => {
-  const res = await jwtAxios.put(`${prefix}/${tno}`, todo);
+// 수정
+export const putOne = async (todo) => {
+  const res = await jwtAxios.put(`${prefix}/${todo.tno}`, todo);
   return res.data;
 };

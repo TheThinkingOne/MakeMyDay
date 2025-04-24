@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useCustomMove from "../../hooks/useCustomMove";
 import { postAdd } from "../../api/quotesApi";
 import ResultModal from "../common/ResultModal"; // 등록 결과를 보여줄 때 사용
+import { showSuccess } from "../../util/toastUtil";
 
 const initState = {
   quotes: "",
@@ -25,6 +26,7 @@ function AddComponent() {
     postAdd(quotesData).then((data) => {
       setResult("등록 완료되었습니다!");
       setQuotesData(initState);
+      showSuccess("명언 등록이 완료되었습니다.");
     });
   };
 

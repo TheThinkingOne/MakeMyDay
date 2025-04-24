@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ModifyComponent from "./ModifyComponent";
+import ModifyComponent from "../../components/todo/ModifyComponent";
 
 const ModifyPage = () => {
   const { tno } = useParams();

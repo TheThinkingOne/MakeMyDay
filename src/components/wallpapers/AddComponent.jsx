@@ -1,71 +1,87 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+import { postAdd } from "../../api/wallpaperApi";
+import { useMutation } from "@tanstack/react-query";
+import ResultModal from "../common/ResultModal";
 import useCustomMove from "../../hooks/useCustomMove";
-import { useQueryClient } from "@tanstack/react-query";
+import { showSuccess } from "../../util/toastUtil";
 
 const initState = {
   papertitle: "",
-  files: [],
 };
 
 const AddComponent = () => {
   const [wallpaper, setWallpaper] = useState(initState);
-
+  const [result, setResult] = useState(null);
   const uploadRef = useRef();
-
   const { moveToList } = useCustomMove();
 
-  // Mutation 에 대해서 알기
   const addMutation = useMutation({
-    mutationFn: (wallpaper) => postAdd(wallpaper),
+    mutationFn: (formData) => postAdd(formData),
+    onSuccess: (data) => {
+      setResult(data);
+      setWallpaper(initState);
+      uploadRef.current.value = null;
+    },
   });
 
-  const handleChangeWallpaper = (e) => {
-    // 입력값 변경하는놈
-    wallpaper[e.target.name] = e.target.value;
-    setWallpaper({ ...wallpaper });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setWallpaper((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleClickAdd = (e) => {
-    console.log(wallpaper);
+  const handleClickAdd = () => {
+    const file = uploadRef.current.files[0];
+    if (!file) {
+      alert("이미지를 하나 선택해주세요.");
+      return;
+    }
 
     const formData = new FormData();
-
-    const files = uploadRef.current.files;
-
-    console.log(files);
-
-    // 파일이 몇개 올라갔는지 확인가능
-    console.log(files.length);
-
-    // 상품정보 업로드 할때 전송되는 파일 정보들
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
+    formData.append("files", file);
     formData.append("papertitle", wallpaper.papertitle);
-    //formData.append("pname", product.pname);
-    console.log(formData);
-
-    // setFetching(true);
 
     addMutation.mutate(formData);
-
-    // useMutation 사용하면 아래 코드처럼 직접 호출 안해도 됨
-    // postAdd(formData).then((data) => {
-    //   setFetching(false);
-    //   console.log("postAdd 서버응답값 : ", data);
-    //   setResult(data.result); // 여기 data.RESULT 였는데 뭐가 맞는걸까
-    // });
+    showSuccess("월페이퍼가 등록되었습니다.");
   };
-
-  const queryClient = useQueryClient();
 
   const closeModal = () => {
-    queryClient.resumePausedMutations("wallpapers/list");
-    moveToList({ page: 1 }); // 리스트의 1페이지로 이동
-    // 이런식으로 리스트 1페이지 이동하는 능력 같은걸 재사용하는 것이군
+    setResult(null);
+    moveToList({ page: 1 });
   };
 
-  return;
+  return (
+    <div className="border-2 border-sky-200 mt-10 m-2 p-4">
+      <div className="flex justify-center mb-4">
+        <input
+          type="text"
+          name="papertitle"
+          value={wallpaper.papertitle}
+          onChange={handleChange}
+          placeholder="배경화면 제목"
+          className="w-2/3 p-2 border rounded"
+        />
+      </div>
+      <div className="flex justify-center mb-4">
+        <input type="file" ref={uploadRef} accept="image/*" />
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={handleClickAdd}
+          className="rounded p-4 bg-blue-500 text-white"
+        >
+          등록
+        </button>
+      </div>
+
+      {result && (
+        <ResultModal
+          title="등록 완료"
+          content={`배경화면이 성공적으로 등록되었습니다.`}
+          callbackFn={closeModal}
+        />
+      )}
+    </div>
+  );
 };
 
 export default AddComponent;

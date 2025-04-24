@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import ReadComponent from "./ReadComponent";
+import ReadComponent from "../../components/todo/ReadComponent.jsx";
 
 // function ReadPage(props) {
 

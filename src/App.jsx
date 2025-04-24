@@ -9,6 +9,9 @@ import BasicMenu from "./components/menus/BasicMenu";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 // 리액트 쿼리 관련 설정 코드 추가
 
 const queryClient = new QueryClient();
@@ -18,6 +21,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={root} />
       <ReactQueryDevtools initialIsOpen={true} />
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </QueryClientProvider>
   );
 }

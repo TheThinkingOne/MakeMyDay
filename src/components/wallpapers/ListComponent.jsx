@@ -1,7 +1,7 @@
-import { useQueryClient } from "@tanstack/react-query";
-import useCustomLogin from "../../hooks/useCustomLogin";
+import { useQuery } from "@tanstack/react-query";
+import { getList } from "../../api/wallpaperApi";
 import useCustomMove from "../../hooks/useCustomMove";
-import { getCookie } from "../../util/cookieUtil";
+import PageComponent from "../common/PageComponent";
 
 const initState = {
   dtoList: [],
@@ -17,38 +17,37 @@ const initState = {
 };
 
 const ListComponent = () => {
-  const { moveToList, moveToRead, page, size, refresh } = useCustomMove();
+  const { page, size, moveToList, moveToRead } = useCustomMove();
 
-  const { moveToLogin } = useCustomLogin();
-
-  const { exceptionHandle } = useCustomLogin();
-
-  const host = API_SERVER_HOST;
-
-  const { data, isFetching, error, isError } = useQuery({
-    // 이 부분에서 오류나는중 noQueryClient set 오류
-    queryKey: ["wallpapers/list", { page, size, refresh }],
-    // 이렇게하면 계속클릭했을때 서버가 계속 호출하는 부담 줄일수있음
+  const { data } = useQuery({
+    queryKey: ["wallpapers/list", { page, size }],
     queryFn: () => getList({ page, size }),
-    staleTime: 1000 * 60, // 60초동안은 동일페이지 클릭문제 꽤 해결
+    keepPreviousData: true,
+    staleTime: 1000 * 30,
   });
-
-  const queryClient = useQueryClient();
-
-  const handleClickPage = (pageParam) => {
-    // if (pageParam.page === parseInt(page)) {
-    //   queryClient.invalidateQueries("products/list"); // 해당 경로의 쿼리를 모두 무효화 시킴
-    // }
-
-    moveToList(pageParam);
-  };
 
   const serverData = data || initState;
 
-  // 근데 리스트를 보는데 쿠키가 필요한가?
-  const token = getCookie("member")?.accessToken;
+  return (
+    <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      {serverData.dtoList.map((wallpaper) => (
+        <div
+          key={wallpaper.ord}
+          className="border p-2 cursor-pointer"
+          onClick={() => moveToRead(wallpaper.ord)}
+        >
+          <img
+            src={`/api/view/${wallpaper.uploadFileNames[0]}`}
+            alt="wallpaper"
+            className="w-full h-48 object-cover mb-2"
+          />
+          <div className="text-center font-bold">{wallpaper.paperTitle}</div>
+        </div>
+      ))}
 
-  return;
+      <PageComponent serverData={serverData} movePage={moveToList} />
+    </div>
+  );
 };
 
 export default ListComponent;

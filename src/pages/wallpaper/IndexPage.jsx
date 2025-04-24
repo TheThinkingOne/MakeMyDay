@@ -1,6 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { BasicLayout } from "../../layouts/BasicLayout.jsx";
+import { useNavigate, Outlet } from "react-router-dom"; // Outlet 추가
+import BasicLayout from "../../layouts/BasicLayout.jsx";
 
 function IndexPage(props) {
   const navigate = useNavigate();

@@ -1,15 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import todoRouter from "./todoRouter.jsx";
-import productRouters from "./ProductsRouter.jsx";
+//import productRouters from "./ProductsRouter.jsx";
 import memberRouter from "./memberRouter.jsx";
+import wallpaperRouter from "./wallpaperRouter.jsx";
 
 const Loading = <div>Loading....</div>;
 
 const Main = lazy(() => import("../pages/MainPage.jsx"));
 const About = lazy(() => import("../pages/AboutPage.jsx"));
 const TodoIndex = lazy(() => import("../pages/todo/IndexPage.jsx"));
-const ProductsIndex = lazy(() => import("../pages/products/IndexPage.jsx"));
+const WallpaperIndex = lazy(() => import("../pages/wallpaper/IndexPage.jsx"));
+//const ProductsIndex = lazy(() => import("../pages/products/IndexPage.jsx"));
 
 const root = createBrowserRouter([
   {
@@ -38,13 +40,13 @@ const root = createBrowserRouter([
     children: todoRouter(), // 'children'으로 수정
   },
   {
-    path: "products",
+    path: "wallpaper",
     element: (
       <Suspense fallback={Loading}>
-        <ProductsIndex />
+        <WallpaperIndex />
       </Suspense>
     ),
-    children: productRouters(),
+    children: wallpaperRouter(),
   },
   {
     path: "member",

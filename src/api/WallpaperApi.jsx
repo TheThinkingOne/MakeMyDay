@@ -47,13 +47,14 @@ export const getList = async ({ page, size }) => {
 
 // 월페이퍼 추가
 export const postAdd = async (formData) => {
-  const res = await jwtAxios.post(`${host}/`, formData);
+  const res = await jwtAxios.post(`${host}/register`, formData);
   return res.data;
 };
 
+// 스프링은 멀티파트 폼 데이터 안받는다고 해서 put 에서 post 로 변경
 // 월페이퍼 수정
-export const putOne = async (ord, formData) => {
-  const res = await jwtAxios.put(`${host}/${ord}`, formData);
+export const modifyOne = async (ord, formData) => {
+  const res = await jwtAxios.post(`${host}/modify/${ord}`, formData);
   return res.data;
 };
 

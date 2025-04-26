@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { Navigate } from "react-router-dom";
 
 const Loading = <div>Loading...</div>;
 
@@ -14,6 +15,10 @@ const WallpaperModify = lazy(() => import("../pages/wallpaper/ModifyPage.jsx"));
 
 const WallpaperRouters = () => {
   return [
+    {
+      index: true,
+      element: <Navigate to="list" />,
+    },
     {
       path: "list",
       element: (

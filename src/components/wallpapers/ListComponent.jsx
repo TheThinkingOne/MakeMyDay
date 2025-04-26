@@ -2,6 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getList } from "../../api/wallpaperApi";
 import useCustomMove from "../../hooks/useCustomMove";
 import PageComponent from "../common/PageComponent";
+import { API_SERVER_HOST } from "../../api/todoApi";
+
+API_SERVER_HOST;
 
 const initState = {
   dtoList: [],
@@ -37,7 +40,7 @@ const ListComponent = () => {
           onClick={() => moveToRead(wallpaper.ord)}
         >
           <img
-            src={`/api/view/${wallpaper.uploadFileNames[0]}`}
+            src={`${API_SERVER_HOST}/makemyday/wallpaper/view/${wallpaper.uploadFileNames[0]}`}
             alt="wallpaper"
             className="w-full h-48 object-cover mb-2"
           />

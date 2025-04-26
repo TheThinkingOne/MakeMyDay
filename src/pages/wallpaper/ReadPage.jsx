@@ -1,5 +1,6 @@
 import React from "react";
 import ReadComponent from "../../components/wallpapers/ReadComponent";
+import { useParams } from "react-router-dom";
 
 // 흠 근데 이게 필요한가 아냐 그냥 하자
 function ReadPage(props) {

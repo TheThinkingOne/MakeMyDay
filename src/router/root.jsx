@@ -4,13 +4,14 @@ import todoRouter from "./todoRouter.jsx";
 //import productRouters from "./ProductsRouter.jsx";
 import memberRouter from "./memberRouter.jsx";
 import wallpaperRouter from "./wallpaperRouter.jsx";
+import BasicLayout from "../layouts/BasicLayout.jsx";
+import RouterLayout from "../layouts/RouterLayout.jsx";
 
 const Loading = <div>Loading....</div>;
 
 const Main = lazy(() => import("../pages/MainPage.jsx"));
 const About = lazy(() => import("../pages/AboutPage.jsx"));
 const TodoIndex = lazy(() => import("../pages/todo/IndexPage.jsx"));
-const WallpaperIndex = lazy(() => import("../pages/wallpaper/IndexPage.jsx"));
 //const ProductsIndex = lazy(() => import("../pages/products/IndexPage.jsx"));
 
 const root = createBrowserRouter([
@@ -43,7 +44,7 @@ const root = createBrowserRouter([
     path: "wallpaper",
     element: (
       <Suspense fallback={Loading}>
-        <WallpaperIndex />
+        <RouterLayout />
       </Suspense>
     ),
     children: wallpaperRouter(),

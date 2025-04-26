@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getOne } from "../../api/wallpaperApi";
 import useCustomMove from "../../hooks/useCustomMove";
+import { API_SERVER_HOST } from "../../api/todoApi";
+
+API_SERVER_HOST;
 
 const initState = {
   ord: 0,
@@ -29,7 +32,7 @@ const ReadComponent = ({ ord }) => {
 
       <div className="mb-4">
         <img
-          src={`/api/view/${wallpaper.uploadFileNames[0]}`}
+          src={`${API_SERVER_HOST}/makemyday/wallpaper/view/${wallpaper.uploadFileNames[0]}`}
           alt="Wallpaper"
           className="w-full h-64 object-cover rounded"
         />

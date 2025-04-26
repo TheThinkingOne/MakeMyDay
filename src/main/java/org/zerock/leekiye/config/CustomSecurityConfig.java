@@ -45,16 +45,19 @@ public class CustomSecurityConfig {
         // 이미지 접근은 로그인 사용자만 (컨트롤러에서 본인 확인)
         // Quotes는 등록은 누구나, list/delete는 ADMIN만
         // Todo, Wallpaper는 로그인 사용자만
+        // 시큐리티는 순차적으로 검사한다고 함 그래서 순서가 중요
         http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/makemyday/main").permitAll()  // 메인 페이지는 모두 허용
                 .requestMatchers("/makemyday/member/**", "/makemyday/member/refresh").permitAll()
-                .requestMatchers("/makemyday/wallpaper/view/**").authenticated()
-                .requestMatchers("/makemyday/wallpapers/**", "/makemyday/wallpaper/**").authenticated()  // 여기 s 오타있었음
+                .requestMatchers("/makemyday/wallpaper/view/**").permitAll()
+                .requestMatchers("/makemyday/wallpaper/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/makemyday/quotes/register").permitAll()
                 .requestMatchers(HttpMethod.GET, "/makemyday/quotes/list", "/makemyday/quotes/{qno}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/makemyday/quotes/{qno}").hasRole("ADMIN")
                 .requestMatchers("/makemyday/todo/**").authenticated()
                 .anyRequest().denyAll()
         );
+
 
 
         // 🔹 로그인 성공/실패 핸들러 (현재 사용 안해도 문제 없음)

@@ -16,7 +16,7 @@ public interface WallPaperService {
 
     WallPaperDTO getForUser(Long ord, String userID);
 
-    PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO, String userID);
+    PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO, Long writerId);
 
     // 사용자별로 해당 사용자가 등록한 월페이퍼 랜덤으로 불러오는 메소드
     // 메소드 타입 뭐로 할지 모르겠군

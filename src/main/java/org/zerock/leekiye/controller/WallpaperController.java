@@ -34,19 +34,20 @@ public class WallpaperController {
     // 파일(이미지) 보는 컨트롤러
     @GetMapping("/view/{fileName}") // 해당 이미지 눌렀을 때 보이게 하는 컨트롤러 메소드
     public ResponseEntity<Resource> viewFileGet(@PathVariable("fileName") String fileName) {
-        Resource resource = (Resource) fileUtil.getFile(fileName);
-
-        // 🔹 Content-Type이 올바르게 설정되지 않으면 브라우저가 차단할 수 있음
-        HttpHeaders headers = new HttpHeaders();
-        try {
-            headers.add("Content-Type", Files.probeContentType(resource.getFile().toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to determine file type", e);
-        }
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(resource);
+//        Resource resource = (Resource) fileUtil.getFile(fileName);
+//
+//        // 🔹 Content-Type이 올바르게 설정되지 않으면 브라우저가 차단할 수 있음
+//        HttpHeaders headers = new HttpHeaders();
+//        try {
+//            headers.add("Content-Type", Files.probeContentType(resource.getFile().toPath()));
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to determine file type", e);
+//        }
+//
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .body(resource);
+        return fileUtil.getFile(fileName);   // 이렇게 간단하게 수정?
     }
 
     // 해당 월페이퍼 불러오기(사용자 전용 조회)
@@ -64,7 +65,7 @@ public class WallpaperController {
 
         // 리스트 불러오기
         // return wallPaperService.getListForUser(pageRequestDTO, memberDTO.getId());
-        return wallPaperService.getList(pageRequestDTO, memberDTO.getUserID());
+        return wallPaperService.getList(pageRequestDTO, memberDTO.getId());
     }
 
     // queryString
@@ -93,9 +94,10 @@ public class WallpaperController {
     }
 
     // 월페이퍼 게시글 수정
-    @PutMapping("/{ord}")
+    // 스프링은 PUT 방식의 multipart/form-data를 기본적으로 처리하지 않는다고 함
+    @PostMapping("/modify/{ord}")
     public Map<String, String> modify(@PathVariable("ord") Long ord,
-                                      @RequestBody WallPaperDTO wallPaperDTO,
+                                      @ModelAttribute WallPaperDTO wallPaperDTO,
                                       @AuthenticationPrincipal MemberDTO memberDTO) {
         // /{tno} 와 todoDTO 안의 tno가 일치하는지 확인
         wallPaperDTO.setOrd(ord);

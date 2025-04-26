@@ -36,7 +36,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 || path.equals("/makemyday/member/kakao")
                 || path.equals("/makemyday/member/modify")
                 || path.equals("/makemyday/quotes/register")
-                || path.startsWith("/makemyday/wallpapers/list");  // 추가 ✅
+                || path.startsWith("/makemyday/wallpapers/list");
 
         // shouldnotfilter 에서 리턴값이 false 이면 그 부분은 체크 한다는 뜻
     }

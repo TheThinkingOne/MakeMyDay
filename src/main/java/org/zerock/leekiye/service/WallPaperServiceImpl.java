@@ -51,7 +51,7 @@ public class WallPaperServiceImpl implements WallPaperService {
     // 월페이퍼 리스트 가져오기
     @Override
     // // public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO, Long userID)
-    public PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO, String userID) {
+    public PageResponseDTO<WallPaperDTO> getList(PageRequestDTO pageRequestDTO, Long writerId) {
 
         // Pageable pageable = // 흠 이부분은 어떻게 해야할지 모르겠다
         // TodoServiceImpl 은 이 부분에 todoSearchByUser 라는 메소드를 만들어서 하라고 하던데
@@ -59,7 +59,7 @@ public class WallPaperServiceImpl implements WallPaperService {
                 pageRequestDTO.getSize(),
                 Sort.by("ord").descending());
 
-        Page<Object[]> result = wallPaperRepository.selectListForUser(userID, pageable);
+        Page<Object[]> result = wallPaperRepository.selectListForUser(writerId, pageable);
         // object[] => 0 product 1 productImage
         // object[] => 0 product 1 productImage
         // object[] => 0 product 1 productImage
@@ -116,36 +116,25 @@ public class WallPaperServiceImpl implements WallPaperService {
 
     }
 
-    // 월페이퍼 수정
-    @Override
-    // // public void modify(WallPaperDTO wallPaperDTO, Long userID)
     public void modify(WallPaperDTO wallPaperDTO, String userID) {
-
-        //
         WallPaper wallpaper = wallPaperRepository.findById(wallPaperDTO.getOrd())
-                        .filter(t -> t.getWriter().getUserID().equals(userID))
-                        .orElseThrow(() -> new RuntimeException("수정 권한 없음"));
+                .filter(t -> t.getWriter().getUserID().equals(userID))
+                .orElseThrow(() -> new RuntimeException("수정 권한 없음"));
 
-//        // 조회
-//        Optional<WallPaper> result = wallPaperRepository.findById(wallPaperDTO.getOrd());
-//        // 변경내용 반영
-//        WallPaper wallPaper = result.orElseThrow();
-//        // 변경내용 저장
-//        wallPaper.changePaperTitle(wallPaperDTO.getPaperTitle());
-//
-//        // 이미지 처리(목록 먼저 비워야 함)
-//        List<String> uploadFileNames = wallPaperDTO.getUploadFileNames();
-//        wallPaper.clearWallPaperList();
-//
-//        if(uploadFileNames != null || !uploadFileNames.isEmpty()) {
-//            uploadFileNames.forEach(uploadName -> {
-//                wallPaper.addImageString(uploadName);
-//            });
-//        }
+        // 제목 변경
+        wallpaper.changePaperTitle(wallPaperDTO.getPaperTitle());
 
-        // 저장
+        // 기존 이미지 목록 삭제 후 새로 추가
+        wallpaper.clearWallPaperList();
+        List<String> uploadFileNames = wallPaperDTO.getUploadFileNames();
+        if(uploadFileNames != null && !uploadFileNames.isEmpty()) {
+            uploadFileNames.forEach(wallpaper::addImageString);
+        }
+
         wallPaperRepository.save(wallpaper);
     }
+
+
 
     // 해당 월페이퍼 게시글(?) 삭제
     @Override

@@ -6,6 +6,6 @@ import org.zerock.leekiye.domain.Todo;
 import org.zerock.leekiye.dto.PageRequestDTO;
 
 public interface TodoSearch {
-    Page<Todo> todoSearch(PageRequestDTO pageRequestDTO);
+    Page<Todo> todoSearchByUser(PageRequestDTO pageRequestDTO, String userID);
 
 }

@@ -50,22 +50,19 @@ public class TodoServiceImpl implements TodoService {
     public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO, String userID) {
 
         // Page<Todo> result = todoRepository.todoSearchByUser(pageRequestDTO, userId);
-        Page<Todo> result = todoRepository.todoSearch(pageRequestDTO);
+        // TodoSearchImpl 에서 유저별 조회로 수정했으니 여기도 수정
+        Page<Todo> result = todoRepository.todoSearchByUser(pageRequestDTO, userID);
 
         List<TodoDTO> dtoList = result
                 .get()
                 .map(this::entityToDTO)
                 .collect(Collectors.toList());
 
-        PageResponseDTO<TodoDTO> responseDTO =
-                PageResponseDTO
-                        .<TodoDTO>withAll()
-                        .dtoList(dtoList)
-                        .pageRequestDTO(pageRequestDTO)
-                        .totalCount(result.getTotalElements())
-                        .build();
-
-        return responseDTO;
+        return PageResponseDTO.<TodoDTO>withAll()
+                .dtoList(dtoList)
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount(result.getTotalElements())
+                .build();
     }
 
     @Override

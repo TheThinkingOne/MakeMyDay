@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/makemyday/")
+@RequestMapping("/makemyday")
 public class QuotesAndWallpaperRandomOutputController {
 
     private final QuotesService quotesService;

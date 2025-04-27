@@ -186,9 +186,10 @@ public class WallPaperServiceImpl implements WallPaperService {
     }
 
     @Override
-    public WallPaperDTO getRandomWallpaper(String userID) {
-        List<WallPaper> wallpapers = wallPaperRepository.findByWriter_UserID(userID);
-        if (wallpapers.isEmpty()) throw new RuntimeException("사용자의 배경화면이 없습니다.");
+    public WallPaperDTO getRandomWallpaper(String userID) {List<WallPaper> wallpapers = wallPaperRepository.findByWriter_UserID(userID);
+        if (wallpapers.isEmpty()) {
+            return null;  // 에러 대신 null 반환으로 바꾸자
+        }
 
         int index = new Random().nextInt(wallpapers.size());
         return entityToDTO(wallpapers.get(index));

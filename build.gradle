@@ -53,9 +53,17 @@ dependencies {
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // // ✅ 테스트용 Lombok (추가)
+    // 테스트용 Lombok 추가해야함
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // 사진 확장자 관련 라이브러리 twelvemonkey
+    implementation 'com.twelvemonkeys.imageio:imageio-webp:3.8.1'
+    implementation 'com.twelvemonkeys.imageio:imageio-jpeg:3.8.1'
+    implementation 'com.twelvemonkeys.imageio:imageio-pnm:3.8.1'
+    implementation 'com.twelvemonkeys.imageio:imageio-tiff:3.8.1'
+    implementation 'com.twelvemonkeys.imageio:imageio-bmp:3.8.1'
+
 }
 
 tasks.named('test') {

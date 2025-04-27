@@ -20,13 +20,38 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
     }
 
     // 검색에 관한 메소드
-    @Override
-    public Page<Todo> todoSearch(PageRequestDTO pageRequestDTO) {
+//    @Override
+//    public Page<Todo> todoSearch(PageRequestDTO pageRequestDTO) {
+//
+//        log.info("Todo search ongoing....");
+//
+//        QTodo todo = QTodo.todo;
+//        JPQLQuery<Todo> query = from(todo);
+//
+//        Pageable pageable = PageRequest.of(
+//                pageRequestDTO.getPage() -1,
+//                pageRequestDTO.getSize(),
+//                Sort.by("tno").descending());
+//
+//        this.getQuerydsl().applyPagination(pageable, query);
+//
+//        List<Todo> list = query.fetch();
+//
+//        long total = query.fetchCount();
+//
+//        return new PageImpl<>(list, pageable, total);
+//    }
 
-        log.info("Todo search ongoing....");
+    // 검색 메소드(사용자별 조회 조건 추가)
+    @Override
+    public Page<Todo> todoSearchByUser(PageRequestDTO pageRequestDTO, String userID) {
+
+        log.info("Todo search for user: " + userID);
 
         QTodo todo = QTodo.todo;
-        JPQLQuery<Todo> query = from(todo);
+
+        JPQLQuery<Todo> query = from(todo)
+                .where(todo.writer.userID.eq(userID));  // 🔥 userID 필터링 추가
 
         Pageable pageable = PageRequest.of(
                 pageRequestDTO.getPage() -1,
@@ -36,7 +61,6 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
         this.getQuerydsl().applyPagination(pageable, query);
 
         List<Todo> list = query.fetch();
-
         long total = query.fetchCount();
 
         return new PageImpl<>(list, pageable, total);

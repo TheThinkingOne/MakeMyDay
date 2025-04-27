@@ -5,6 +5,12 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173, // 원하는 포트 번호
+    port: 5173, // 그대로 유지
+    proxy: {
+      "/makemyday": {
+        target: "http://localhost:8080", // 스프링 서버 주소
+        changeOrigin: true,
+      },
+    },
   },
 });

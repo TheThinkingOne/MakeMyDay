@@ -20,7 +20,8 @@ const initState = {
 };
 
 const ListComponent = () => {
-  const { page, size, moveToList, moveToRead } = useCustomMove();
+  const { page, size, moveToList, moveToRead, moveToRegister } =
+    useCustomMove();
 
   const { data } = useQuery({
     queryKey: ["wallpapers/list", { page, size }],
@@ -49,6 +50,13 @@ const ListComponent = () => {
       ))}
 
       <PageComponent serverData={serverData} movePage={moveToList} />
+
+      <button
+        onClick={() => moveToRegister()}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        + 새 월페이퍼 작성
+      </button>
     </div>
   );
 };

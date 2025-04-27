@@ -6,6 +6,7 @@ import memberRouter from "./memberRouter.jsx";
 import wallpaperRouter from "./wallpaperRouter.jsx";
 import BasicLayout from "../layouts/BasicLayout.jsx";
 import RouterLayout from "../layouts/RouterLayout.jsx";
+import WallpaperIndexPage from "../pages/wallpaper/IndexPage.jsx";
 
 const Loading = <div>Loading....</div>;
 
@@ -47,7 +48,17 @@ const root = createBrowserRouter([
         <RouterLayout />
       </Suspense>
     ),
-    children: wallpaperRouter(),
+    children: [
+      {
+        path: "",
+        element: (
+          <Suspense fallback={Loading}>
+            <WallpaperIndexPage />
+          </Suspense>
+        ),
+        children: wallpaperRouter(), // 그대로 사용
+      },
+    ],
   },
   {
     path: "member",

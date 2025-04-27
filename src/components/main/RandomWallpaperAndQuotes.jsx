@@ -62,8 +62,9 @@ const RandomWallpaperAndQuote = () => {
     author: "You",
   };
 
+  // 이 부분 주소 잘못 적혀있었음
   const imageURL = mainData.wallpaper
-    ? `/api/view/${mainData.wallpaper.uploadFileNames[0]}`
+    ? `/makemyday/wallpaper/view/${mainData.wallpaper.uploadFileNames[0]}`
     : null;
 
   return (

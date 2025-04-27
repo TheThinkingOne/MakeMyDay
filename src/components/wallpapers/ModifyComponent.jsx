@@ -112,6 +112,12 @@ const ModifyComponent = ({ ord }) => {
         >
           삭제
         </button>
+        <button
+          onClick={() => moveToList({ page: 1 })}
+          className="bg-gray-500 text-white p-2 rounded"
+        >
+          목록으로
+        </button>
       </div>
 
       {result && (

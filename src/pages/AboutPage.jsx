@@ -1,19 +1,62 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { FaGithub, FaEnvelope, FaPhone } from "react-icons/fa";
 import BasicLayout from "../layouts/BasicLayout.jsx";
 import useCustomLogin from "../hooks/useCustomLogin.jsx";
 
 const AboutPage = () => {
-  const { isLogin, moveToLoginReturn } = useCustomLogin(); // 로그인 여부 확인
+  const { isLogin, moveToLoginReturn } = useCustomLogin();
 
-  // 여기다가 나의 깃허브, 개발자 정보 써놓자
   if (!isLogin) {
-    return moveToLoginReturn(); // 로그인 한 상황이 아니면 네비게이트만 리턴
+    return moveToLoginReturn();
   }
 
   return (
     <BasicLayout>
-      <div className={"text-3xl"}>Main Page</div>
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+        {/* 제목 */}
+        <h1 className="text-5xl font-extrabold mb-4 text-blue-600">
+          Make My Day
+        </h1>
+
+        <br></br>
+
+        {/* 소개글 */}
+        <p className="text-lg text-gray-700 mb-10 text-center leading-relaxed">
+          당신의 하루 일정을 더 특별하게!
+          <br />
+          일정 관리, 나만의 배경화면, 영감을 주는 명언까지 한 곳에서.
+        </p>
+
+        {/* 개발자 정보 */}
+        <div className="flex flex-col items-center space-y-4">
+          <div className="flex space-x-6">
+            <a
+              href="https://github.com/TheThinkingOne/MakeMyDay"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center text-gray-800 hover:text-black"
+            >
+              <FaGithub size={30} />
+              <span className="ml-2 text-lg">GitHub 오픈소스</span>
+            </a>
+
+            <div className="flex items-center text-gray-800">
+              <FaEnvelope size={30} />
+              <span className="ml-2 text-lg">ousterss@gmail.com</span>
+            </div>
+          </div>
+
+          <div className="flex items-center text-gray-800">
+            <FaPhone size={30} />
+            <span className="ml-2 text-lg">010-6375-4553</span>
+          </div>
+        </div>
+
+        {/* 푸터 */}
+        <div className="mt-12 text-sm text-gray-500">
+          © 2025 Make My Day. All Rights Reserved.
+        </div>
+      </div>
     </BasicLayout>
   );
 };

@@ -7,6 +7,7 @@ const Login = lazy(() => import("../pages/member/LoginPage"));
 const Logout = lazy(() => import("../pages/member/LogoutPage"));
 
 const KakaoRedirect = lazy(() => import("../pages/member/KaKaoRedirectPage"));
+const MemberRegister = lazy(() => import("../pages/member/RegisterPage"));
 
 // 로그인 시 비밀번호 변경하라고 설정하는 페이지
 const MemberModify = lazy(() => import("../pages/member/ModifyPage"));
@@ -36,6 +37,14 @@ const memberRouter = () => {
       element: (
         <Suspense fallback={Loading}>
           <KakaoRedirect />
+        </Suspense>
+      ),
+    },
+    {
+      path: "register",
+      element: (
+        <Suspense fallback={Loading}>
+          <MemberRegister />
         </Suspense>
       ),
     },

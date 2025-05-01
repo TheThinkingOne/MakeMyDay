@@ -96,11 +96,23 @@ function LoginComponent(props) {
               className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
               onClick={handleClickLogin}
             >
-              LOGIN
+              로그인
             </button>
           </div>
         </div>
       </div>
+
+      {/* 🔽 회원가입 버튼 추가 */}
+      <div className="flex justify-center">
+        <button
+          className="rounded p-3 w-36 bg-gray-500 text-white text-lg"
+          onClick={() => moveToPath("/member/register")}
+        >
+          회원가입
+        </button>
+      </div>
+
+      <br></br>
 
       {/* 2025/02/19 카카오 로그인 추가 */}
       <KaKaoLoginComponent />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useCustomMove from "../../hooks/useCustomMove";
-import { getOne } from "../../api/quotesApi";
+import { deleteOne, getOne } from "../../api/quotesApi";
 
 const initState = {
   qno: 0,

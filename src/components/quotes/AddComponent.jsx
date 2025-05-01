@@ -3,6 +3,7 @@ import useCustomMove from "../../hooks/useCustomMove";
 import { postAdd } from "../../api/quotesApi";
 import ResultModal from "../common/ResultModal"; // 등록 결과를 보여줄 때 사용
 import { showSuccess } from "../../util/toastUtil";
+import useCustomLogin from "../../hooks/useCustomLogin";
 
 const initState = {
   quotes: "",
@@ -13,7 +14,7 @@ function AddComponent() {
   const [quotesData, setQuotesData] = useState(initState);
   const [result, setResult] = useState(null);
 
-  const { moveToList } = useCustomMove();
+  const { moveToList, moveToPath } = useCustomMove();
 
   // 🔹 인풋 변경 핸들러
   const handleChange = (e) => {
@@ -30,10 +31,16 @@ function AddComponent() {
     });
   };
 
-  // 🔹 모달 닫기
+  // 모달 닫기
+  const { loginState } = useCustomLogin();
+
   const closeModal = () => {
     setResult(null);
-    moveToList(); // 등록 후 리스트로 이동
+    if (loginState?.roleNames?.includes("ADMIN")) {
+      moveToList(); // 관리자만 리스트로 이동시키기
+    } else {
+      moveToPath("/"); // 일반 유저는 홈으로 이동
+    }
   };
 
   return (

@@ -7,6 +7,7 @@ import wallpaperRouter from "./wallpaperRouter.jsx";
 import BasicLayout from "../layouts/BasicLayout.jsx";
 import RouterLayout from "../layouts/RouterLayout.jsx";
 import WallpaperIndexPage from "../pages/wallpaper/IndexPage.jsx";
+import quotesRouter from "./quotesRouter.jsx";
 
 const Loading = <div>Loading....</div>;
 
@@ -63,6 +64,10 @@ const root = createBrowserRouter([
   {
     path: "member",
     children: memberRouter(),
+  },
+  {
+    path: "quote",
+    children: quotesRouter(), // 요렇게 간단하게 처리
   },
 ]);
 

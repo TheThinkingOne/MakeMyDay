@@ -8,6 +8,7 @@ const initState = {
   isSocial: false,
   accessToken: "",
   refreshToken: "",
+  roleNames: [], // 이게 빠져있어서 권한 못 불러왔었음
 };
 
 const loadMemberCookie = () => {
@@ -16,6 +17,11 @@ const loadMemberCookie = () => {
   // 한글닉네임 관련 처리 ]
   if (memberInfo && memberInfo.nickname) {
     memberInfo.nickname = decodeURIComponent(memberInfo.nickname);
+  }
+
+  // roleNames 없으면 빈 배열로 설정하기
+  if (memberInfo && !Array.isArray(memberInfo.roleNames)) {
+    memberInfo.roleNames = [];
   }
 
   return memberInfo;

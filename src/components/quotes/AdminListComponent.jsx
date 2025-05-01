@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useCustomMove from "../../hooks/useCustomMove";
+import PageComponent from "../common/PageComponent";
 import { getList } from "../../api/quotesApi";
 
 const initState = {

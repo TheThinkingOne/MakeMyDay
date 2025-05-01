@@ -30,8 +30,29 @@ export const loginPost = async (loginParam) => {
   return res.data;
 };
 
+export const checkDuplicateID = async (userID) => {
+  const res = await axios.get(`${host}/check`, {
+    params: { userID }, // get 방식이니 param 사용해야 함
+  });
+
+  return res.data;
+};
+
 export const modifyMember = async (member) => {
+  // 어쩔때 params 보내고 어쩔때 JSON 헤더 보내는걸까
   const res = await axios.put(`${host}/modify`, member);
+
+  return res.data;
+};
+
+export const registerMember = async (member) => {
+  const header = { headers: { "Content-Type": "application/json" } };
+
+  const res = await axios.post(
+    `${host}/register`,
+    JSON.stringify(member),
+    header
+  );
 
   return res.data;
 };

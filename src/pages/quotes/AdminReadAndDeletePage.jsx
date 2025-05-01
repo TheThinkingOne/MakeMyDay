@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import React from "react";
 import AdminReadAndDeleteComponent from "../../components/quotes/AdminReadAndDeleteComponent";
 
-const ReadPage = () => {
+const AdminReadAndDeletePage = () => {
   const { qno } = useParams();
 
   console.log("qno: ", qno);
@@ -11,7 +11,7 @@ const ReadPage = () => {
 
   return (
     <div className="font-extrabold w-full bg-white mt-6">
-      <div className="text-2xl"> 명언 관리 {tno}</div>
+      <div className="text-2xl"> 명언 관리 {qno}</div>
 
       <AdminReadAndDeleteComponent qno={qno} />
     </div>

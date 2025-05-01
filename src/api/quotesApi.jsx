@@ -55,7 +55,7 @@ const host = `${API_SERVER_HOST}/makemyday/quotes`;
 
 // 누구나 등록 가능
 export const postAdd = async (quotesObj) => {
-  const res = await axios.post(`${host}/`, quotesObj);
+  const res = await axios.post(`${host}/register`, quotesObj);
   return res.data;
 };
 

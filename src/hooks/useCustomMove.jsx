@@ -64,6 +64,10 @@ const useCustomMove = () => {
     });
   };
 
+  const moveToPath = (path) => {
+    navigate({ pathname: path });
+  };
+
   const moveToRegister = () => {
     navigate({ pathname: "../register", search: queryDefault });
   };
@@ -72,7 +76,16 @@ const useCustomMove = () => {
     navigate({ pathname: "/" });
   };
 
-  return { moveToList, moveToModify, moveToRead, page, size, refresh };
+  return {
+    moveToList,
+    moveToModify,
+    moveToRead,
+    moveToHome,
+    moveToPath,
+    page,
+    size,
+    refresh,
+  };
 };
 
 export default useCustomMove;

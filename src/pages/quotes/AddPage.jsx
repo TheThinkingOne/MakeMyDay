@@ -8,6 +8,7 @@ function AddPage(props) {
       <div className="text-3xl font-extrabold">명언 추가</div>
 
       <AddComponent />
+      <br></br>
 
       <div className="text-2xl font-extrabold">명은은 모두에게 보입니다.</div>
       <div className="text-2xl font-extrabold">

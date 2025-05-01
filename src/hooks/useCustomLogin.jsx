@@ -57,7 +57,11 @@ const useCustomLogin = () => {
   const doLogin = async (loginParam) => {
     try {
       const result = await loginPost(loginParam);
+
+      console.log("로그인 응답 확인", result); // 여기에 roleNames 포함되어야 함
+      //
       saveAsCookie(result);
+
       return result;
     } catch (error) {
       console.error("로그인 실패:", error);
@@ -70,11 +74,13 @@ const useCustomLogin = () => {
     // 로그아웃하면 쿠키정보, 로그인정보, 카트정보 삭제
     removeCookie("member");
     resetState();
+    window.location.href = "/"; // 이거 추가해서 강제 새로고침 하게 만듦
   };
 
   const saveAsCookie = (data) => {
     setCookie("member", JSON.stringify(data), 1);
     setLoginState(data);
+    console.log("로그인 후 받은 데이터: ", data);
   };
 
   // 로그인, 로그아웃 후에 페이지 이동시키는 함수

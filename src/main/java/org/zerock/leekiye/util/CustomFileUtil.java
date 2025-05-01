@@ -47,38 +47,35 @@ public class CustomFileUtil {
 
     // 파일 저장 관련 메소드
     public List<String> saveFiles(List<MultipartFile> files) throws RuntimeException {
+        if (files == null || files.isEmpty()) return List.of();
 
-        if(files == null || files.size() == 0) { return List.of();} // 없으면 빈 리스트 반환
+        List<String> supportedFormats = List.of("jpg", "jpeg", "png", "bmp", "gif");  // Thumbnailator 기본 지원 확장자
+        List<String> uploadNames = new ArrayList<>();
 
-        List<String> uploadNames = new ArrayList<>(); // 저장된 파일 이름 탐색
-        for(MultipartFile file : files) {
-            // 파일의 이름이 같은 경우를 대비해 UUID 사용
-            String savedName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        for (MultipartFile file : files) {
+            String originalName = file.getOriginalFilename();
+            String extension = originalName.substring(originalName.lastIndexOf('.') + 1).toLowerCase();
 
+            if (!supportedFormats.contains(extension)) {
+                throw new RuntimeException("지원하지 않는 이미지 형식입니다: " + extension);
+            }
+
+            // 파일 이름이 같은 경우를 방지하기 위한 UUID 사용
+            String savedName = UUID.randomUUID() + "_" + originalName;
             Path savePath = Paths.get(uploadPath, savedName);
 
-            // files.copy 사용하면 예외처리 필요
             try {
-                Files.copy(file.getInputStream(), savePath); // 이건 원본파일 업로드 하는 부분
+                Files.copy(file.getInputStream(), savePath);
 
-                String contentType = file.getContentType(); // Mime type
-                // 이미지 파일이라면 섬네일로 만든다
-                if (contentType != null && contentType.startsWith("image")) {
-                    Path thumbNailPath = Paths.get(uploadPath, "s_" + savedName);
-
-                    Thumbnails.of(savePath.toFile()).size(200,200).toFile(thumbNailPath.toFile());
-
-                }
-
+                // 이미지면 썸네일 생성
+                Path thumbNailPath = Paths.get(uploadPath, "s_" + savedName);
+                Thumbnails.of(savePath.toFile()).size(200, 200).toFile(thumbNailPath.toFile());
 
                 uploadNames.add(savedName);
-
-
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("파일 저장 중 오류 발생", e);
             }
-        } // end of for
-
+        }
         return uploadNames;
     }
 

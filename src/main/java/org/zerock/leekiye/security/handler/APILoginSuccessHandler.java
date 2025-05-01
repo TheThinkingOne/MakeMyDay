@@ -29,6 +29,9 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, Object> claims = memberDTO.getClaims(); // 이 claims 는 뭔지도 알아야할듯
 
+        // 여기에 clamins 확인용 로그 추가
+        log.info("claims 최종 내용: {}", claims);
+
         String accessToken = JWTUtil.generateToken(claims, 10); // 액새스 토큰 10분간 유지 (권리)
         String refreshToken = JWTUtil.generateToken(claims, 60*24); // 리프래시 토큰
 
@@ -45,7 +48,6 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         PrintWriter printWriter = response.getWriter();
         printWriter.println(jsonStr);
         printWriter.close();
-
 
     }
 }

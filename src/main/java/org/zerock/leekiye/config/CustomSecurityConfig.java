@@ -25,7 +25,7 @@ import java.util.Arrays;
 @Configuration
 @Log4j2
 @RequiredArgsConstructor
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true) // 여기 꼭 붙여야 @PreAuthorize가 작동한다고 함
 public class CustomSecurityConfig {
 
     @Bean
@@ -61,13 +61,14 @@ public class CustomSecurityConfig {
 
 
         // 🔹 로그인 성공/실패 핸들러 (현재 사용 안해도 문제 없음)
-        http.formLogin(form -> {
-            form.disable();
-            form.loginPage("/makemyday/member/login")
-                    .loginProcessingUrl("/makemyday/member/login") // 로그인 요청 허용
-                    .successHandler(new APILoginSuccessHandler())
-                    .failureHandler(new APILoginFailHandler());
-        });
+        // 여기 주석 처리하고 로그인 해보면 rolenames 가 넘어가지는지 테스트
+//        http.formLogin(form -> {
+//            form.disable();
+//            form.loginPage("/makemyday/member/login")
+//                    .loginProcessingUrl("/makemyday/member/login") // 로그인 요청 허용
+//                    .successHandler(new APILoginSuccessHandler())
+//                    .failureHandler(new APILoginFailHandler());
+//        });
 
         // 🔹 JWT 필터 등록
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);

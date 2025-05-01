@@ -75,6 +75,13 @@ public class SocialController {
         );
     }
 
+    @GetMapping("/makemyday/member/check")
+    public Map<String, String> checkDuplicate(@RequestParam("userID") String userID) {
+        boolean exists = memberService.existsByUserID(userID);
+        return Map.of("result", exists ? "DUPLICATE" : "AVAILABLE");
+    }
+
+
     // 이런 씨2팔 일반 로그인 관련 메소드가 없잖아\
     @PostMapping("/makemyday/member/login")
     public Map<String, Object> login(@RequestBody MemberLoginDTO loginDTO) {
@@ -96,7 +103,8 @@ public class SocialController {
                 "accessToken", accessToken,
                 "refreshToken", refreshToken,
                 "userID", memberDTO.getUserID(),
-                "userName", memberDTO.getUserName()
+                "userName", memberDTO.getUserName(),
+                "roleNames", memberDTO.getRoleNames()
         );
     }
 

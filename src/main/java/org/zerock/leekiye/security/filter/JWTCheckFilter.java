@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.zerock.leekiye.dto.MemberDTO;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // 이 클래스 부분 강의 다시 들어볼까
 @Log4j2
@@ -26,6 +29,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
         String path = request.getRequestURI(); // 체크할 uri 경로
+        String method = request.getMethod();
 
         log.info("check url--------" + path);
 
@@ -35,7 +39,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 || path.equals("/makemyday/member/register")
                 || path.equals("/makemyday/member/kakao")
                 || path.equals("/makemyday/member/modify")
-                || path.equals("/makemyday/quotes/register")
+                || (method.equals("POST") && path.equals("/makemyday/quotes/"))   // 🔥 명언 등록만 예외!
                 || path.startsWith("/makemyday/wallpapers/list");
 
         // shouldnotfilter 에서 리턴값이 false 이면 그 부분은 체크 한다는 뜻
@@ -170,9 +174,16 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             log.info(memberDTO);
             log.info(memberDTO.getAuthorities());
 
+            // 0429 추가
+            // 권한 리스트 추가
+            List<GrantedAuthority> authorities = roleNames.stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toList());
+
             // 인증 토큰 설정
             UsernamePasswordAuthenticationToken authenticationToken = // 스프링 시큐리티가 사용하는 토큰
                     new UsernamePasswordAuthenticationToken(memberDTO, password, memberDTO.getAuthorities());
+
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             // 무상태라서 매번 호출해서 인증한다는 리소스 적인 단점이 있다.
 

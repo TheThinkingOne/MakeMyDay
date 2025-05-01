@@ -71,9 +71,14 @@ public class QuotesServiceImpl implements QuotesService {
         quotesRepository.deleteById(qno);
     }
 
+    // 여기서 직접 dtoToEntity 구현 안하고 그냥 super 로 했더니 Entity Null 오류 발생하고 있었음
     @Override
     public Quotes dtoToEntity(QuotesDTO quotesDTO) {
-        return QuotesService.super.dtoToEntity(quotesDTO);
+
+        return Quotes.builder()
+                .quotes(quotesDTO.getQuotes())
+                .author(quotesDTO.getAuthor())
+                .build();
     }
 
     @Override

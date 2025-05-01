@@ -95,6 +95,15 @@ public class MemberServiceImpl implements MemberService {
     public Member register(MemberRegisterDTO memberRegisterDTO) { // 여기 리턴타입을 void 로 하는게 좋은가 아니면
         // Member 로 하는게 좋은가 흠...
         // 여기다가 회원가입 로직 적으면 될듯
+        // 여기다가 이미 존재하는 회원 체크하는 로직도 추가해야할듯(서비스 등)
+
+        if(memberRegisterDTO.getUserID().length() < 8) {
+            throw new RuntimeException("아이디, 비밀번호는 8글자 이상으로 설정해주세요.");
+        }
+        if(memberRegisterDTO.getPassword().length()<8) {
+            throw new RuntimeException("아이디, 비밀번호는 8글자 이상으로 설정해주세요.");
+        }
+
         Member member = dtoToEntity(memberRegisterDTO);
         member.addRole(MemberRole.USER);
         return memberRepository.save(member);
@@ -107,10 +116,16 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = result.orElseThrow();
 
-        // 이 페이지에서 정보를 수정했다는 것은 더이상 소셜 회원이 아니라는 것?
+        // 이게 빠져있어서 닉변이 안됬었던것 같다
         member.changeNickname(memberModifyDTO.getUserName());
-        member.changeSocial(false);
-        member.changePw(passwordEncoder.encode(memberModifyDTO.getPassword()));
+
+        // 이 페이지에서 정보를 수정했다는 것은 더이상 소셜 회원이 아니라는 것?
+        // 소셜 유저는 비밀번호 변경 불가
+        if (!member.isSocial()) {
+            if (memberModifyDTO.getPassword() != null && !memberModifyDTO.getPassword().isBlank()) {
+                member.changePw(passwordEncoder.encode(memberModifyDTO.getPassword()));
+            }
+        }
 
         memberRepository.save(member);
     }

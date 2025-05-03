@@ -16,7 +16,7 @@ function IndexPage(props) {
   return (
     <BasicLayout>
       <div className="w-full flex m-2 p-2 ">
-        <div
+        {/* <div
           className="text-xl m-1 p-2 w-20 font-extrabold text-center underline"
           onClick={handleClickList}
         >
@@ -27,7 +27,7 @@ function IndexPage(props) {
           onClick={handleClickAdd}
         >
           일정추가
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-wrap w-full">
         <Outlet />

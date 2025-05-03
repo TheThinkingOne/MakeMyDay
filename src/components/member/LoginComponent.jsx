@@ -58,7 +58,7 @@ function LoginComponent(props) {
   return (
     <div className="border-2 border-sky-200 mt-10 m-2 p-4">
       <div className="flex justify-center">
-        <div className="text-4xl m-4 p-4 font-extrabold text-blue-500">
+        <div className="text-4xl m-4 p-4 font-extrabold text-sky-300">
           Make My Day 로그인
         </div>
       </div>
@@ -68,7 +68,7 @@ function LoginComponent(props) {
           User ID
         </label>
         <input
-          className="min-w-[250px] p-3 rounded border border-neutral-500 shadow-md text-center"
+          className="min-w-[250px] p-3 rounded border border-neutral-500 shadow-md text-center text-black"
           name="userID"
           type="text"
           value={loginParam.userID}
@@ -81,7 +81,7 @@ function LoginComponent(props) {
           Password
         </label>
         <input
-          className="min-w-[250px] p-3 rounded border border-neutral-500 shadow-md text-center"
+          className="min-w-[250px] p-3 rounded border border-neutral-500 shadow-md text-center text-black"
           name="password"
           type="password"
           value={loginParam.password}

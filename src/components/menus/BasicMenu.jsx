@@ -12,9 +12,12 @@ const BasicMenu = () => {
   }, [loginState]);
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex justify-between items-center p-2 z-50 bg-transparent">
+    <nav
+      className="fixed top-4 left-0 w-full flex justify-between items-center px-6 z-50 bg-transparent transition-opacity duration-700"
+      id="top-nav"
+    >
       {/* 좌측 메뉴 */}
-      <div className="flex space-x-3 ml-4 text-gray-800 font-extrabold text-2xl">
+      <div className="flex gap-x-8 ml-4 text-white font-extrabold text-3xl drop-shadow-md">
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         {isLogged && (
@@ -30,19 +33,19 @@ const BasicMenu = () => {
       </div>
 
       {/* 우측 메뉴 */}
-      <div className="flex items-center space-x-2 mr-4 text-gray-800 text-lg">
+      <div className="flex items-center space-x-8 mr-6 text-white text-2xl font-bold drop-shadow-md">
         {isLogged ? (
           <>
             <Link to="/member/modify" className="underline">
               {loginState.userName}
             </Link>
             <Link to="/member/logout" className="underline">
-              Logout
+              로그아웃
             </Link>
           </>
         ) : (
           <Link to="/member/login" className="underline">
-            Login
+            로그인
           </Link>
         )}
       </div>

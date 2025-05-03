@@ -15,7 +15,7 @@ const WallpaperIndexPage = () => {
   return (
     <div className="p-4">
       <div className="flex gap-4 mb-4">
-        <div
+        {/* <div
           className="text-xl font-bold underline cursor-pointer"
           onClick={handleClickList}
         >
@@ -26,7 +26,7 @@ const WallpaperIndexPage = () => {
           onClick={handleClickAdd}
         >
           ADD
-        </div>
+        </div> */}
       </div>
       <Outlet />
     </div>

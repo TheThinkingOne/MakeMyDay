@@ -32,7 +32,15 @@ const AddComponent = () => {
   const handleClickAdd = () => {
     const file = uploadRef.current.files[0];
     if (!file) {
-      alert("이미지를 하나 선택해주세요.");
+      alert("파일을 선택해주세요.");
+      return;
+    }
+
+    const allowedExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "mp4"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      alert("지원하지 않는 파일 형식입니다.");
       return;
     }
 
@@ -50,26 +58,49 @@ const AddComponent = () => {
   };
 
   return (
-    <div className="border-2 border-sky-200 mt-10 m-2 p-4">
-      <div className="flex justify-center mb-4">
+    <div className="flex flex-col items-center bg-gray-50 p-10 mt-10 rounded-lg shadow-md w-full max-w-xl mx-auto">
+      <h2 className="text-3xl font-extrabold text-blue-600 mb-10">
+        배경화면 등록
+      </h2>
+
+      <div className="w-full mb-4">
+        <label className="block mb-2 font-bold text-gray-700 text-right pr-4">
+          제목
+        </label>
         <input
           type="text"
           name="papertitle"
           value={wallpaper.papertitle}
           onChange={handleChange}
-          placeholder="배경화면 제목"
-          className="w-2/3 p-2 border rounded"
+          placeholder="배경화면 제목을 입력하세요"
+          className="w-full border p-3 rounded text-gray-800 bg-white"
         />
       </div>
-      <div className="flex justify-center mb-4">
-        <input type="file" ref={uploadRef} accept="image/*" />
+
+      <div className="w-full mb-4">
+        <label className="block mb-2 font-bold text-gray-700 text-right pr-4">
+          이미지 또는 동영상
+        </label>
+        <input
+          type="file"
+          ref={uploadRef}
+          accept=".jpg,.jpeg,.png,.bmp,.gif,.mp4"
+          className="w-full"
+        />
       </div>
-      <div className="flex justify-end">
+
+      <div className="flex justify-center gap-4 mt-6">
         <button
           onClick={handleClickAdd}
-          className="rounded p-4 bg-blue-500 text-white"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded"
         >
           등록
+        </button>
+        <button
+          onClick={() => moveToList({ page: 1 })}
+          className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded"
+        >
+          목록
         </button>
       </div>
 

@@ -1,36 +1,42 @@
-import React from "react";
+import React, { useCallback } from "react";
 import BasicLayout from "../../layouts/BasicLayout";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ListComponent from "../../components/todo/ListComponent";
 
-// function ListPage(props) {
-
-//     // 페이지 리스트 작성
-//     const [queryParams] = useSearchParams()
-
-//     // URL의 쿼리 스트링에서 page와 size를 읽어오고,
-//     // 기본값(없으면 page=1, size=10)을 설정.
-//     const page = queryParams.get('page') ? parseInt(queryParams.get('page')) : 1
-//     const size = queryParams.get('size') ? parseInt(queryParams.get('size')) : 10
-
-//     return (
-//         <div className="p-4 w-full bg-white">
-//             <div className="text-3xl font-extrabold">
-//                 Todo List Page Component
-//             </div>
-//             <ListComponent/>
-
-//         </div>
-//     );
-// }
-
 const ListPage = () => {
-  return (
-    <div className="p-4 w-full bg-white">
-      <div className="text-3xl font-extrabold">나의 일정</div>
+  const navigate = useNavigate();
+  const [queryParams] = useSearchParams();
+  const page = queryParams.get("page") ? parseInt(queryParams.get("page")) : 1;
+  const size = queryParams.get("size") ? parseInt(queryParams.get("size")) : 10;
 
-      <ListComponent />
-    </div>
+  const handleClickAdd = useCallback(() => {
+    navigate({ pathname: "/todo/add" });
+  }, []);
+
+  return (
+    <BasicLayout>
+      <div className="mt-10 py-6 px-6 flex flex-col items-center justify-center bg-gray-50 text-gray-800 w-[90%] max-w-screen-md mx-auto rounded-lg shadow-lg">
+        {/* 제목 */}
+        <h1 className="text-4xl font-extrabold mb-6 text-blue-600">
+          나의 일정
+        </h1>
+
+        {/* 버튼 영역 */}
+        <div className="mb-6 flex justify-center space-x-4">
+          <button
+            onClick={handleClickAdd}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700"
+          >
+            + 일정 추가
+          </button>
+        </div>
+
+        {/* 리스트 컴포넌트 */}
+        <div className="w-full">
+          <ListComponent />
+        </div>
+      </div>
+    </BasicLayout>
   );
 };
 

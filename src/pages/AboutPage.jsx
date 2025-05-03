@@ -12,7 +12,9 @@ const AboutPage = () => {
 
   return (
     <BasicLayout>
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+      <br></br>
+      <br></br>
+      <div className="mt-20 py-6 px-6 flex flex-col items-center justify-center bg-gray-50 text-gray-800 w-[80%] max-w-screen-md mx-auto rounded-lg shadow-lg">
         {/* 제목 */}
         <h1 className="text-5xl font-extrabold mb-4 text-blue-600">
           Make My Day
@@ -56,6 +58,18 @@ const AboutPage = () => {
         <div className="mt-12 text-sm text-gray-500">
           © 2025 Make My Day. All Rights Reserved.
         </div>
+
+        {/* 건의 게시판 버튼: 중앙 아래 고정 */}
+        {/* 건의 게시판 버튼 */}
+        <div className="flex justify-center mt-12">
+          <button
+            className="bg-blue-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700"
+            onClick={() => alert("건의 게시판 기능은 준비 중입니다!")}
+          >
+            ✉ 건의 게시판
+          </button>
+        </div>
+        {/* */}
       </div>
     </BasicLayout>
   );

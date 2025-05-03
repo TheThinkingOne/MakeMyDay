@@ -71,8 +71,6 @@ const ReadPage = () => {
 
   return (
     <div className="font-extrabold w-full bg-white mt-6">
-      <div className="text-2xl">일정 확인</div>
-
       <ReadComponent tno={tno} />
     </div>
   );

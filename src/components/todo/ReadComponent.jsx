@@ -1,6 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getOne } from "../../api/todoApi";
 import useCustomMove from "../../hooks/useCustomMove";
 
@@ -12,26 +10,16 @@ const initState = {
   savePeriod: "",
 };
 
-// React의 컴포넌트는 상태가 변경되면 자동으로 렌더링된다
-//
-
 function ReadComponent({ tno }) {
   const [todo, setTodo] = useState(initState);
-
   const [loading, setLoading] = useState(true);
-
   const { moveToList, moveToModify } = useCustomMove();
 
   useEffect(() => {
     getOne(tno).then((data) => {
-      console.log(data);
       setTodo(data);
       setLoading(false);
     });
-
-    // 기동기 호출 막기
-    // 번호가 바뀌어 상태가 바뀌면 다시 랜더링 되게 한다?
-    // 무한 호출 방지?
   }, [tno]);
 
   if (loading) {
@@ -39,29 +27,28 @@ function ReadComponent({ tno }) {
   }
 
   return (
-    <div className="border-2 border-sky-200 mt-10 m-2 p-4">
+    <div className="flex flex-col items-center bg-gray-50 p-10 rounded-lg shadow-md w-full max-w-2xl mx-auto">
+      <h2 className="text-3xl font-extrabold text-blue-600 mb-10">일정 확인</h2>
+
       <Field label="번호" value={todo.tno} />
       <Field label="제목" value={todo.title} />
       <Field label="마감일" value={todo.dueDate} />
       <Field
         label="상태"
         value={todo.complete ? "완료" : "미완료"}
-        highlight={todo.complete ? "green" : "red"}
+        highlight={todo.complete ? "text-green-600" : "text-red-600"}
       />
       <Field label="보관 기간" value={translateSavePeriod(todo.savePeriod)} />
 
-      <div className="flex justify-end p-4">
+      <div className="flex justify-center gap-4 mt-6">
         <button
-          type="button"
-          className="rounded p-4 m-2 text-xl w-32 text-white bg-blue-500"
-          onClick={() => moveToList()}
+          className="rounded px-6 py-2 text-white bg-blue-500 text-lg"
+          onClick={moveToList}
         >
           목록
         </button>
-
         <button
-          type="button"
-          className="rounded p-4 m-2 text-xl w-32 text-white bg-yellow-500"
+          className="rounded px-6 py-2 text-white bg-yellow-500 text-lg"
           onClick={() => moveToModify(todo.tno)}
         >
           수정
@@ -71,34 +58,17 @@ function ReadComponent({ tno }) {
   );
 }
 
-const makeDiv = (title, value) => (
-  <div className="flex justify-center">
-    <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-      <div className="w-1/5 p-6 text-right font-bold">{title}</div>
-      <div className="w-4/5 p-6 rounded-r border border-solid shadow-md">
-        {value}
-      </div>
+const Field = ({ label, value, highlight = "" }) => (
+  <div className="flex w-full mb-4">
+    <div className="w-1/4 text-right pr-4 font-bold text-gray-700">{label}</div>
+    <div
+      className={`w-3/4 border p-3 rounded bg-white ${highlight} text-black`}
+    >
+      {value}
     </div>
   </div>
 );
 
-// ✅ 공통 출력용 컴포넌트
-const Field = ({ label, value, highlight }) => (
-  <div className="flex justify-center">
-    <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-      <div className="w-1/5 p-6 text-right font-bold">{label}</div>
-      <div
-        className={`w-4/5 p-6 rounded-r border border-solid shadow-md ${
-          highlight ? `text-${highlight}-600 font-bold` : ""
-        }`}
-      >
-        {value}
-      </div>
-    </div>
-  </div>
-);
-
-// 보관기간 한글 변환 함수(앞에 Add컴포넌트꺼랑 동일)
 const translateSavePeriod = (period) => {
   switch (period) {
     case "ONE_DAY":

@@ -6,7 +6,7 @@ import { API_SERVER_HOST } from "../../api/todoApi";
 
 const ModifyComponent = ({ ord }) => {
   const [wallpaper, setWallpaper] = useState(null);
-  const [preview, setPreview] = useState(null); // 미리보기 상태 추가
+  const [preview, setPreview] = useState(null);
   const [result, setResult] = useState(null);
   const uploadRef = useRef();
   const { moveToList, moveToRead } = useCustomMove();
@@ -18,21 +18,29 @@ const ModifyComponent = ({ ord }) => {
   const handleFileChange = () => {
     const file = uploadRef.current.files[0];
     if (file) {
-      setPreview(URL.createObjectURL(file)); // 미리보기 URL 설정
+      setPreview(URL.createObjectURL(file));
     }
   };
 
   const handleClickModify = async () => {
-    const formData = new FormData();
-    formData.append("paperTitle", wallpaper.paperTitle);
-
     const file = uploadRef.current.files[0];
 
     if (file) {
-      // 새 파일이 있으면 기존 파일명은 넘기지 않음
+      const allowedExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "mp4"];
+      const fileExtension = file.name.split(".").pop().toLowerCase();
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        alert("지원하지 않는 파일 형식입니다.");
+        return;
+      }
+    }
+
+    const formData = new FormData();
+    formData.append("paperTitle", wallpaper.paperTitle);
+
+    if (file) {
       formData.append("files", file);
     } else {
-      // 새 파일을 안 올렸다면 기존 파일 유지
       wallpaper.uploadFileNames.forEach((fileName) =>
         formData.append("uploadFileNames", fileName)
       );
@@ -48,73 +56,84 @@ const ModifyComponent = ({ ord }) => {
   };
 
   const closeModal = () => {
-    if (result === "삭제 완료") {
-      moveToList();
-    } else {
-      moveToRead(ord);
-    }
+    result === "삭제 완료" ? moveToList() : moveToRead(ord);
   };
 
-  if (!wallpaper) return <div>로딩 중...</div>;
+  if (!wallpaper) return <div className="text-white">로딩 중...</div>;
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <label className="block font-bold mb-2">배경화면 제목</label>
+    <div className="p-4 text-gray-800 bg-white rounded shadow-md max-w-5xl mx-auto my-10">
+      <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
+        배경화면 수정
+      </h2>
+
+      <div className="mb-6">
+        <label className="block font-bold mb-2 text-gray-700">
+          배경화면 제목
+        </label>
         <input
           type="text"
-          value={wallpaper.paperTitle} // 정확한 필드명 사용
+          value={wallpaper.paperTitle}
           onChange={(e) =>
             setWallpaper({ ...wallpaper, paperTitle: e.target.value })
           }
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded text-gray-800 bg-white"
         />
       </div>
 
-      <div className="mb-4">
-        <h3>기존 사진</h3>
-        <img
-          src={`${API_SERVER_HOST}/makemyday/wallpaper/view/${wallpaper.uploadFileNames[0]}`}
-          alt="current"
-          className="w-full h-48 object-cover mb-2"
-        />
-      </div>
-
-      <div className="mb-4">
-        <h3>변경하려는 사진 (미리보기)</h3>
-        {preview ? (
+      {/* 이미지 두 개를 좌우로 배치 */}
+      <div className="mb-6 flex flex-col md:flex-row gap-4 justify-center items-center">
+        {/* 기존 이미지 */}
+        <div className="w-full md:w-1/2 text-center">
+          <h3 className="text-gray-700 font-bold mb-2">기존 사진</h3>
           <img
-            src={preview}
-            alt="preview"
-            className="w-full h-48 object-cover mb-2"
+            src={`${API_SERVER_HOST}/makemyday/wallpaper/view/${wallpaper.uploadFileNames[0]}`}
+            alt="current"
+            className="w-full h-48 object-cover rounded"
           />
-        ) : (
-          <p>이미지를 선택하세요.</p>
-        )}
-        <input
-          type="file"
-          ref={uploadRef}
-          accept="image/*"
-          onChange={handleFileChange}
-        />
+        </div>
+
+        {/* 미리보기 이미지 */}
+        <div className="w-full md:w-1/2 text-center">
+          <h3 className="text-gray-700 font-bold mb-2">
+            변경하려는 사진 (미리보기)
+          </h3>
+          {preview ? (
+            <img
+              src={preview}
+              alt="preview"
+              className="w-full h-48 object-cover rounded mb-2"
+            />
+          ) : (
+            <p className="text-gray-500 mb-2">이미지를 선택하세요.</p>
+          )}
+          <input
+            type="file"
+            ref={uploadRef}
+            accept=".jpg,.jpeg,.png,.bmp,.gif,.mp4"
+            onChange={handleFileChange}
+            className="w-full text-gray-800"
+          />
+        </div>
       </div>
 
-      <div className="flex gap-4">
+      {/* 버튼 영역 */}
+      <div className="flex gap-4 justify-center mt-6">
         <button
           onClick={handleClickModify}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
         >
           수정
         </button>
         <button
           onClick={handleClickDelete}
-          className="bg-red-500 text-white p-2 rounded"
+          className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600"
         >
           삭제
         </button>
         <button
           onClick={() => moveToList({ page: 1 })}
-          className="bg-gray-500 text-white p-2 rounded"
+          className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600"
         >
           목록으로
         </button>

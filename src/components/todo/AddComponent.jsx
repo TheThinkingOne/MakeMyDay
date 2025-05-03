@@ -12,50 +12,25 @@ const initState = {
   complete: false,
 };
 
-function AddComponent(props) {
-  const [todo, setTodo] = useState({ ...initState }); // 상태코드
-
+function AddComponent() {
+  const [todo, setTodo] = useState({ ...initState });
   const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
 
-  const [error, setError] = useState(""); // 에러설정
-
-  const { moveToList } = useCustomMove(); // 새 글이 등록되면 1페이지로 이동
-
+  const { moveToList } = useCustomMove();
   const { loginState } = useCustomLogin();
 
-  // 변경에 대한 처리
-  const handleChangeTodo = (e) => {
-    // todo[title]
-
-    // console.log(e.target.name, e.target.value);
-    // todo[e.target.name] = e.target.value; // 직접 상태 수정하는 방식
-
-    // setTodo({ ...todo });
-    // // 문법이 익숙하지 않아 잘 모르겠군
-
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setTodo((prev) => ({ ...prev, [name]: value }));
-    // 기존 상태(prev)를 복사한 후 해당 필드만 새롭게 업데이트
-    // 리액트에서 권장하는 패턴
   };
 
   const handleDateValidation = () => {
-    // 사용자가 입력한 마감일이 오늘 이후인지 확인하는 메소드
-
     const selectedDate = new Date(todo.dueDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return selectedDate >= today;
   };
-
-  // const handleClicked = () => {
-  //   //console.log(todo);
-  //   postAdd(todo).then((result) => {
-  //     // {TNO:104} // 이런 형태로 나올것임
-  //     setResult(result.TNO);
-  //     setTodo({ ...initState }); // 초기화
-  //   }); // todo 전달
-  // };
 
   const handleClicked = () => {
     if (!handleDateValidation()) {
@@ -82,78 +57,71 @@ function AddComponent(props) {
   };
 
   const closeModal = () => {
-    setResult(null); // 모달창 안나오게하기
-    moveToList(); // 파라미터 없으면 1페이지로 이동하게 됨
+    setResult(null);
+    moveToList();
   };
 
   return (
-    <div className="border-2 border-sky-200 mt-10 m-2 p-4">
-      <div className="flex justify-center">
-        <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-1/5 p-6 text-right font-bold">일정 내용</div>
-          <input
-            className="w-4/5 p-6 rounded-r border border-neutral-500 shadow-md"
-            name="title"
-            type="text"
-            value={todo.title}
-            onChange={handleChangeTodo}
-          />
-        </div>
-      </div>
+    <div className="flex flex-col items-center bg-gray-50 p-10 rounded-lg shadow-md w-full max-w-xl mx-auto">
+      <h2 className="text-3xl font-extrabold text-blue-600 mb-10">일정 등록</h2>
 
-      <div className="flex justify-center">
-        <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-1/5 p-6 text-right font-bold">마감일</div>
-          <input
-            className="w-4/5 p-6 rounded-r border border-neutral-500 shadow-md"
-            name="dueDate"
-            type="date"
-            value={todo.dueDate}
-            onChange={handleChangeTodo}
-            min={new Date().toISOString().split("T")[0]}
-            // 오늘 날짜부터만 선택 가능
-          />
-        </div>
-      </div>
+      <Field label="일정 내용">
+        <input
+          type="text"
+          name="title"
+          value={todo.title}
+          onChange={handleChange}
+          className="w-full border p-3 rounded bg-white text-gray-800"
+        />
+      </Field>
 
-      <div className="flex justify-center">
-        <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-1/5 p-6 text-right font-bold">보관 기간</div>
-          <select
-            name="savePeriod"
-            className="w-4/5 p-6 rounded border border-neutral-500 shadow-md"
-            value={todo.savePeriod}
-            onChange={handleChangeTodo}
-          >
-            <option value="" disabled selected>
-              -- 보관기간을 선택하세요 --
-            </option>
-            <option value="ONE_DAY">하루</option>
-            <option value="ONE_WEEK">일주일</option>
-            <option value="PERMANENT">영구보관</option>
-          </select>
-        </div>
-      </div>
+      <Field label="마감일">
+        <input
+          type="date"
+          name="dueDate"
+          min={new Date().toISOString().split("T")[0]}
+          value={todo.dueDate}
+          onChange={handleChange}
+          className="w-full border p-3 rounded bg-white text-gray-800"
+        />
+      </Field>
 
-      {error && (
-        <div className="text-red-600 font-bold text-center mb-4">{error}</div>
-      )}
+      <Field label="보관 기간">
+        <select
+          name="savePeriod"
+          value={todo.savePeriod}
+          onChange={handleChange}
+          className="w-full border p-3 rounded bg-white text-gray-800"
+        >
+          <option value="" disabled>
+            -- 선택하세요 --
+          </option>
+          <option value="ONE_DAY">하루</option>
+          <option value="ONE_WEEK">일주일</option>
+          <option value="PERMANENT">영구보관</option>
+        </select>
+      </Field>
 
-      <div className="flex justify-end">
-        <div className="relative mb-4 flex p-4 flex-wrap items-stretch">
-          <button
-            type="button"
-            onClick={handleClicked}
-            className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
-          >
-            등록
-          </button>
-        </div>
+      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+
+      <div className="flex justify-center gap-4 mt-6">
+        <button
+          className="bg-blue-500 text-white px-6 py-2 rounded"
+          onClick={handleClicked}
+        >
+          등록
+        </button>
+        <button
+          className="bg-gray-400 text-white px-6 py-2 rounded"
+          onClick={moveToList}
+        >
+          목록
+        </button>
       </div>
 
       {result && (
         <ResultModal
-          title={"등록 완료"}
+          title="등록 완료"
           content={`일정 번호 ${result}가 등록되었습니다.`}
           callbackFn={closeModal}
         />
@@ -161,5 +129,13 @@ function AddComponent(props) {
     </div>
   );
 }
+
+// ✅ 공통 필드 레이아웃 컴포넌트
+const Field = ({ label, children }) => (
+  <div className="flex w-full mb-4 items-center">
+    <div className="w-1/4 text-right pr-4 font-bold text-gray-700">{label}</div>
+    <div className="w-3/4">{children}</div>
+  </div>
+);
 
 export default AddComponent;

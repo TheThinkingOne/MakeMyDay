@@ -6,7 +6,6 @@ function ModifyPage(props) {
   const { ord } = useParams();
   return (
     <div className="p-4 w-full bg-white">
-      <div className="text-3xl font-extrabold">배경화면 수정</div>
       <ModifyComponent ord={ord}></ModifyComponent>
     </div>
   );

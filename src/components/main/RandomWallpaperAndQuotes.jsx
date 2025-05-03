@@ -28,6 +28,11 @@ const RandomWallpaperAndQuote = () => {
       }
     };
 
+    const topNav = document.getElementById("top-nav");
+    if (topNav) {
+      topNav.style.opacity = showUI ? "1" : "0";
+    }
+
     fetchAndSet();
     const interval = setInterval(fetchAndSet, 10000);
 
@@ -47,7 +52,7 @@ const RandomWallpaperAndQuote = () => {
       window.removeEventListener("keydown", activityHandler);
       clearTimeout(inactivityTimer.current);
     };
-  }, []);
+  }, [showUI]);
 
   if (!mainData) {
     return (
@@ -69,7 +74,7 @@ const RandomWallpaperAndQuote = () => {
 
   return (
     <div
-      className={`w-full h-screen bg-center flex items-center justify-center transition-all duration-1000 ease-in-out ${
+      className={`fixed top-0 left-0 w-screen h-screen bg-center bg-no-repeat bg-cover flex items-center justify-center z-0 ${
         showUI ? "" : "hide-cursor"
       }`}
       style={{
@@ -80,7 +85,7 @@ const RandomWallpaperAndQuote = () => {
     >
       {/* 명언 박스 */}
       {showUI && (
-        <div className="bg-black bg-opacity-50 p-6 rounded text-white text-center shadow-lg transition-opacity duration-700">
+        <div className="bg-black bg-opacity-30 p-6 rounded text-white text-center shadow-lg transition-opacity duration-700">
           <p className="text-3xl italic font-light">“{quote.quotes}”</p>
           <p className="text-xl mt-4"> — {quote.author} — </p>
         </div>

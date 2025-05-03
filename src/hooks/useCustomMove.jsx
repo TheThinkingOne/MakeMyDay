@@ -69,7 +69,7 @@ const useCustomMove = () => {
   };
 
   const moveToRegister = () => {
-    navigate({ pathname: "../register", search: queryDefault });
+    navigate({ pathname: "../add", search: queryDefault });
   };
 
   const moveToHome = () => {
@@ -82,6 +82,7 @@ const useCustomMove = () => {
     moveToRead,
     moveToHome,
     moveToPath,
+    moveToRegister,
     page,
     size,
     refresh,

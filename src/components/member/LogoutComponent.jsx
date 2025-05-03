@@ -14,9 +14,11 @@ function LogoutComponent() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-white">
-      <div className="border-2 border-red-200 p-10 rounded shadow-md text-center">
-        <h2 className="text-4xl font-extrabold text-orange-600-500 mb-8">
+    <div className="flex justify-center items-center py-40 bg-transparent">
+      <br></br> {/* 화면 중간 위치 정도 */}
+      <br></br>
+      <div className="bg-white border-2 border-red-200 p-10 rounded shadow-md text-center max-w-xl w-full">
+        <h2 className="text-2xl font-bold text-gray-800 mb-8">
           아직 완료하지 않은 일정이 있는지 다시 확인해주세요
         </h2>
         <button

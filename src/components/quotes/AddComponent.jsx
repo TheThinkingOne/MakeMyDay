@@ -56,9 +56,11 @@ function AddComponent() {
       <div className="flex justify-center">
         <div className="w-full max-w-2xl p-6">
           <div className="mb-4">
-            <label className="block text-xl font-bold mb-2">명언</label>
+            <label className="block text-xl font-bold mb-2 text-black">
+              명언
+            </label>
             <input
-              className="w-full p-4 border rounded"
+              className="w-full p-4 border rounded text-gray-600"
               type="text"
               name="quotes"
               value={quotesData.quotes}
@@ -68,9 +70,11 @@ function AddComponent() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-xl font-bold mb-2">저자</label>
+            <label className="block text-xl font-bold mb-2 text-black">
+              저자
+            </label>
             <input
-              className="w-full p-4 border rounded"
+              className="w-full p-4 border rounded text-gray-600"
               type="text"
               name="author"
               value={quotesData.author}

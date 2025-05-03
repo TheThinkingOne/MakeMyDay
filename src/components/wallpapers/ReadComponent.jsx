@@ -28,8 +28,6 @@ const ReadComponent = ({ ord }) => {
 
   return (
     <div className="p-6 border rounded shadow-md max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">배경화면 상세보기</h2>
-
       <div className="mb-4">
         <img
           src={`${API_SERVER_HOST}/makemyday/wallpaper/view/${wallpaper.uploadFileNames[0]}`}

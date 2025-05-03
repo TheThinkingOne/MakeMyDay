@@ -38,7 +38,7 @@ function AdminListComponent(props) {
             className="basis-[30%] min-w-[300px] p-4 rounded shadow-md bg-white cursor-pointer"
             onClick={() => moveToRead(quotes.qno)}
           >
-            <div className="flex justify-between">
+            <div className="flex justify-between text-gray-600">
               <div className="font-extrabold text-2xl p-2">{quotes.qno}</div>
               <div className="text-1xl m-1 p-2 font-extrabold">
                 {quotes.quotes}

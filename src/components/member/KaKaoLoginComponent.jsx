@@ -7,7 +7,7 @@ const link = getKakaoLoginLink();
 function KaKaoLoginComponent(props) {
   return (
     <div className="flex flex-col">
-      <div className="text-center text-blue-500">
+      <div className="text-center text-gray-800">
         카카오 로그인 시 자동으로 가입처리 됩니다
       </div>
       <div className="flex justify-center w-full">

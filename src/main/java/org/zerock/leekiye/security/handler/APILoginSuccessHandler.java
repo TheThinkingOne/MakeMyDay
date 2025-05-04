@@ -32,7 +32,7 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         // 여기에 clamins 확인용 로그 추가
         log.info("claims 최종 내용: {}", claims);
 
-        String accessToken = JWTUtil.generateToken(claims, 10); // 액새스 토큰 10분간 유지 (권리)
+        String accessToken = JWTUtil.generateToken(claims, 60*3); // 액새스 토큰 10분간 유지 (권리)
         String refreshToken = JWTUtil.generateToken(claims, 60*24); // 리프래시 토큰
 
         claims.put("accessToken",accessToken);

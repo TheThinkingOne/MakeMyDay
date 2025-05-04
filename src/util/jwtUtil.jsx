@@ -103,7 +103,7 @@ const beforeRes = async (res) => {
   const data = res.data;
 
   if (data && data.error === "ERROR WITH ACCESS TOKEN LUL") {
-    console.log("------------------------------123456789");
+    console.log("AccessToken 만료 → RefreshToken 갱신 시도");
     // data.error 를 아마 Spring 코드에 쓴 그대로 적어야 할 것
     // !! 클라이언트(리액트쪽)와 서버쪽(스프링)의 에러메세지가 반드시 동일해야 함
     // 쿠키에서 정보 꺼내서

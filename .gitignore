@@ -3,7 +3,7 @@
 *.pem
 
 # gradle build outputs
-# **/build/
+**/build/
 **/out/
 
 # logs

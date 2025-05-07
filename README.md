@@ -40,7 +40,7 @@
 
 - **개발 기간**: 2025.03 ~ 2025.05.06
 - **개발 인원**: 개인 프로젝트 (1인 개발)
-- **배포 주소**: [www.makemyday.kr](www.makemyday.kr)
+- **배포 주소**: [makemyday.kr](https://www.makemyday.kr/)
 
 ---
 

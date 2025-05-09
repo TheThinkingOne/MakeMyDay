@@ -13,7 +13,10 @@ import jwtAxios from "../util/jwtUtil"; // axios 에서 jwtAxios 로 변경
 // 비동기 통신이란 서버로 데이터를 요청한 후,
 // 응답이 올 때까지 기다리지 않고 다른 작업을 진행할 수 있는 방식입니다.
 
-export const API_SERVER_HOST = "http://localhost:8080"; // api 서버의 기본 URL 설정
+// 로컬이면 localhost로 가게 하고 실제 웹 페이지면 설정한 내 주소로 가게 수정
+export const API_SERVER_HOST =
+  window.location.hostname === "localhost" ? "http://localhost:8080" : "";
+
 // 스프링 어플리케이션 실행하니까 게시글 조회 페이지에 tno 값이 제대로 뜬다.
 
 const prefix = `${API_SERVER_HOST}/makemyday/todo`; // API 요청의 기본 경로 설정

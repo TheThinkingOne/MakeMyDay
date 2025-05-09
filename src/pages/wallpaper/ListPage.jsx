@@ -3,7 +3,7 @@ import ListComponent from "../../components/wallpapers/ListComponent";
 import { useNavigate } from "react-router-dom";
 
 function ListPage(props) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] bg-white p-8">

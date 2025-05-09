@@ -3,7 +3,11 @@ import { API_SERVER_HOST } from "./todoApi";
 
 const rest_api_key = "eb66e213bcb63195d75cfab926585ee9"; // 카카오개발자에서 받은 Rest API 키
 
-const redirect_uri = "http://localhost:5173/member/kakao"; // 카카오개발자에서 설정한 리다이렉트 URL 이건 문제없는듯함
+// 로컬 개발환경에선 로컬호스트로, 실제 배포 웹 페이지에서는 설정 주소로 가게 수정
+const redirect_uri =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5173/member/kakao"
+    : "https://makemyday.kr/member/kakao";
 
 const auth_code_path = "https://kauth.kakao.com/oauth/authorize"; // 카카오 자체에서 설정한 인가 링크
 

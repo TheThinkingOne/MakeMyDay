@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.leekiye.config.CustomSecurityConfig;
@@ -188,7 +189,15 @@ public class MemberRepositoryTest {
 
     // 또 맴버에서 테스트 해볼반한게 뭐가있을가
 
-
+    @Test
+    public void PasswordEncoderTest() {
+        {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            String rawPassword = "@q6jctr6wm";
+            String encoded = encoder.encode(rawPassword);
+            log.info("Encoded password: " + encoded);
+        }
+    }
 
 
 

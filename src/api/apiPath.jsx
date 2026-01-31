@@ -1,5 +1,10 @@
 export const API_SERVER_HOST = "http://localhost:8080";
 
+export const API_BASE = "/api";
+
+
+
+
 export const PATHS = {
   MEMBER: `${API_SERVER_HOST}/makemyday/member`,
   TODO: `${API_SERVER_HOST}/makemyday/todo`,
